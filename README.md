@@ -42,3 +42,8 @@ In production, the server is run like so:
 Alternatively:
 
     npm run prod
+
+
+## Licence
+
+[MIT Licence](LICENCE)
