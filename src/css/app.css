@@ -1,38 +1,42 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
+  background-color: #f0f0f0;
   font-family: Monospace;
   font-size: 12px;
-  background-color: #f0f0f0;
-  margin: 0px;
   overflow: hidden;
 }
 
 #container {
-  -moz-user-select: none;
-  -webkit-user-select: none;
   user-select: none;
 }
 
 #crosshair {
-  position: fixed;
-  top: 50%;
+  height: 32px;
   left: 50%;
   margin: -16px 0 0 -16px;
+  position: fixed;
+  top: 50%;
   width: 32px;
-  height: 32px;
 }
 
 #stats {
-  bottom: 0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
 }
 
 .bar-tab {
-  right: 33% !important;
   left: 33% !important;
+  right: 33% !important;
 }
 
 .errorMessage {
+  margin: 20px auto;
   text-align: center;
   width: 200px;
-  margin: 20px auto;
 }
+

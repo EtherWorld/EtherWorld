@@ -6,7 +6,8 @@ var extend = require('extend')
 var fly = require('voxel-fly')
 var walk = require('voxel-walk')
 
-module.exports = function(opts, setup) {
+
+module.exports = function (opts, setup) {
   setup = setup || defaultSetup
   var defaults = {
     generate: voxel.generator['Valley'],
@@ -78,5 +79,4 @@ function defaultSetup(game, avatar) {
     if (vx > 0.001 || vz > 0.001) walk.stopWalking()
     else walk.startWalking()
   })
-
-}
+};

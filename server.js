@@ -10,7 +10,9 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
-app.use(express.static(__dirname + '/www'));
+app.use('/js/', express.static(__dirname + '/build/js'));
+app.use('/css/', express.static(__dirname + '/build/css'));
+app.use(express.static(__dirname + '/src'));
 
 io.on('connection', function (socket) {
 	console.log('got connection');
