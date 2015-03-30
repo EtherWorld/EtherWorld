@@ -25,26 +25,26 @@ module.exports = function(opts, setup) {
   window.game = game // for debugging
   game.appendTo(container)
   if (game.notCapable()) return game
-  
+
   var createPlayer = player(game)
 
   // create the player from a minecraft skin file and tell the
   // game to use it as the main player
-  var avatar = createPlayer(opts.playerSkin || 'player.png')
+  var avatar = createPlayer(opts.playerSkin || '/img/player.png')
   avatar.possess()
   avatar.yaw.position.set(2, 14, 4)
 
   setup(game, avatar)
-  
+
   return game
 }
 
 function defaultSetup(game, avatar) {
-  
+
   var makeFly = fly(game)
   var target = game.controls.target()
   game.flyer = makeFly(target)
-  
+
   // highlight blocks when you look at them, hold <Ctrl> for block placement
   var blockPosPlace, blockPosErase
   var hl = game.highlighter = highlight(game, { color: 0xff0000 })
@@ -81,6 +81,7 @@ function defaultSetup(game, avatar) {
   })
 
 }
+
 },{"extend":26,"voxel":80,"voxel-engine":27,"voxel-fly":68,"voxel-highlight":73,"voxel-player":76,"voxel-walk":78}],2:[function(require,module,exports){
 require('./game')()
 },{"./game":1}],3:[function(require,module,exports){
