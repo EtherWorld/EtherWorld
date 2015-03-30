@@ -43,6 +43,10 @@ Alternatively:
 
     npm run prod
 
+To run the server à la Heroku:
+
+    foreman start web
+
 
 ## Licence
 
