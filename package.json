@@ -1,8 +1,8 @@
 {
   "name": "vrpad",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "like Etherpad but for VR",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/KevinGrandon/vrpad.git"
@@ -17,5 +17,13 @@
     "express": "^4.12.2",
     "socket.io": "^1.3.5",
     "underscore": "^1.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.3.7"
+  },
+  "scripts": {
+    "start": "NODE_ENVIRONMENT='production' node server",
+    "dev": "NODE_ENVIRONMENT='development' nodemon server",
+    "prod": "npm start"
   }
 }
