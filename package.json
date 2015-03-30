@@ -1,0 +1,21 @@
+{
+  "name": "vrpad",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KevinGrandon/vrpad.git"
+  },
+  "author": "mozvr <mozvr@mozilla.com>",
+  "license": "MPL",
+  "bugs": {
+    "url": "https://github.com/KevinGrandon/mozvr/issues"
+  },
+  "homepage": "https://github.com/KevinGrandon/mozvr",
+  "dependencies": {
+    "express": "^4.12.2",
+    "socket.io": "^1.3.5",
+    "underscore": "^1.8.2"
+  }
+}
