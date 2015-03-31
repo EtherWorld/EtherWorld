@@ -1,5 +1,7 @@
 var fs = require('fs');
 
+var Lobby = require('./lib/lobby');
+var storage = require('./lib/storage');
 var utils = require('./lib/utils');
 
 // Socket.io mapping.
@@ -40,6 +42,17 @@ io.on('connection', function (socket) {
   });
 });
 
+
+var lobby = new Lobby();
+
+function logRooms() {
+  // For debugging.
+  var rooms = lobby.getRooms();
+  console.log('open rooms: %s', rooms.length ? rooms.join(', ') : '[none]');
+}
+
+logRooms();
+
 app.get('/room/:room?', function (req, res, next) {
   var roomName = req.params.room;
 
@@ -48,8 +61,13 @@ app.get('/room/:room?', function (req, res, next) {
     return;
   }
 
+  lobby.addRoom(roomName);
+  logRooms();
+
   next();
 });
+
+
 
 SPA_ROUTES.forEach(function (route) {
   app.get(route, function (req, res) {
