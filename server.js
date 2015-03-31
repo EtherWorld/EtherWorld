@@ -7,16 +7,22 @@ var sockets = {};
 
 // Webserver.
 var express = require('express');
+var morgan = require('morgan');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+
+
+const NODE_ENV = process.env.NODE_ENVIRONMENT || 'development';
 
 // Routes that should render `/index.html` and get routed on the client.
 const SPA_ROUTES = [
   '/room/:room'
 ];
 
+
+app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));
 
 app.use('/js/', express.static(__dirname + '/build/js'));
 app.use('/css/', express.static(__dirname + '/build/css'));
