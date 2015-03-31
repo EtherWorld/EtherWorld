@@ -1,13 +1,30 @@
-var createGame = require('voxel-engine')
-var extend = require('extend')
-var fly = require('voxel-fly')
-var highlight = require('voxel-highlight')
-var player = require('voxel-player')
-var voxel = require('voxel')
-var walk = require('voxel-walk')
+var urllib = require('url');
+var qs = require('query-string');
+
+var extend = require('extend');
+var Grapnel = require('grapnel');
+
+var createGame = require('voxel-engine');
+var fly = require('voxel-fly');
+var highlight = require('voxel-highlight');
+var player = require('voxel-player');
+var voxel = require('voxel');
+var walk = require('voxel-walk');
+
+var utils = require('../../lib/utils');
 
 
 module.exports = function (opts, setup) {
+  var GET = qs.parse(window.location.search);
+  var router = new Grapnel({pushState: true});
+
+  router.navigate(window.location.href);
+
+  router.get('/room/:room', function (req) {
+    var roomName = req.params.room;
+    console.log('room: %s', roomName);
+  });
+
   setup = setup || defaultSetup
   var defaults = {
     generate: voxel.generator.Valley,
