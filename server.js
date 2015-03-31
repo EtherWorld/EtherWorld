@@ -74,10 +74,6 @@ SPA_ROUTES.forEach(function(route) {
   })
 });
 
-server.listen(port, function() {
-  console.log('Server listening at port %d', port);
-});
-
 // Multiplayer.
 var WebSocketServer = require('ws').Server
 var websocket = require('websocket-stream')
@@ -86,7 +82,7 @@ var path = require('path')
 var uuid = require('uuid').v4
 var crunch = require('voxel-crunch')
 var engine = require('voxel-engine')
-var texturePath = require('painterly-textures')(__dirname)
+var texturePath = require('painterly-textures')(__dirname + '/src/textures')
 var voxel = require('voxel')
 
 // these settings will be used to create an in-memory
@@ -256,3 +252,6 @@ function sendInitialChunks(emitter) {
   emitter.emit('noMoreChunks', true)
 }
 
+server.listen(port, function() {
+  console.log('Server listening at port %d', port);
+});

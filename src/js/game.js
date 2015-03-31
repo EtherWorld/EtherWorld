@@ -16,13 +16,15 @@ var walk = require('voxel-walk');
 var utils = require('../../lib/utils');
 
 
-module.exports = function (opts, setup) {
+module.exports = function(opts, setup) {
   var GET = qs.parse(window.location.search);
-  var router = new Grapnel({pushState: true});
+  var router = new Grapnel({
+    pushState: true
+  });
 
   router.navigate(window.location.href);
 
-  router.get('/room/:room', function (req) {
+  router.get('/room/:room', function(req) {
     var roomName = req.params.room;
     console.log('room: %s', roomName);
   });
@@ -38,11 +40,19 @@ module.exports = function (opts, setup) {
   setup = setup || defaultSetup
   var settings = {
     generate: voxel.generator.Valley,
-    chunkDistance: 2,
-    materials: ['#fff', '#000'],
-    materialFlatColor: true,
+    materials: [
+      ['grass', 'dirt', 'grass_dirt'],
+      'obsidian',
+      'brick',
+      'grass'
+    ],
+    texturePath: '/textures/',
     worldOrigin: [0, 0, 0],
-    controls: { discreteFire: true }
+    controls: {
+      discreteFire: true
+    },
+    avatarInitialPosition: [2, 20, 2],
+    resetSettings: true
   }
   opts = extend({}, settings, opts || {})
 
@@ -50,7 +60,13 @@ module.exports = function (opts, setup) {
   var game = {}
   settings.generatorToString = settings.generate.toString()
   game.settings = settings
+
   var client = createClient(opts.server || 'ws://localhost:3000', game);
+
+  client.emitter.on('noMoreChunks', function(id) {
+    console.log('noMoreChunks');
+  });
+
   var game = client.game
 
   var container = opts.container || document.body
@@ -79,32 +95,41 @@ function defaultSetup(game, avatar) {
 
   // highlight blocks when you look at them, hold <Ctrl> for block placement
   var blockPosPlace, blockPosErase
-  var hl = game.highlighter = highlight(game, { color: 0xff0000 })
-  hl.on('highlight', function (voxelPos) { blockPosErase = voxelPos })
-  hl.on('remove', function () { blockPosErase = null })
-  hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos })
-  hl.on('remove-adjacent', function () { blockPosPlace = null })
+  var hl = game.highlighter = highlight(game, {
+    color: 0xff0000
+  })
+  hl.on('highlight', function(voxelPos) {
+    blockPosErase = voxelPos
+  })
+  hl.on('remove', function() {
+    blockPosErase = null
+  })
+  hl.on('highlight-adjacent', function(voxelPos) {
+    blockPosPlace = voxelPos
+  })
+  hl.on('remove-adjacent', function() {
+    blockPosPlace = null
+  })
 
   // toggle between first and third person modes
-  window.addEventListener('keydown', function (ev) {
+  window.addEventListener('keydown', function(ev) {
     if (ev.keyCode === 'R'.charCodeAt(0)) avatar.toggle()
   })
 
   // block interaction stuff, uses highlight data
   var currentMaterial = 1
 
-  game.on('fire', function () {
+  game.on('fire', function() {
     var position = blockPosPlace
     if (position) {
       game.createBlock(position, currentMaterial)
-    }
-    else {
+    } else {
       position = blockPosErase
       if (position) game.setBlock(position, 0)
     }
   })
 
-  game.on('tick', function () {
+  game.on('tick', function() {
     walk.render(target.playerSkin)
     var vx = Math.abs(target.velocity.x)
     var vz = Math.abs(target.velocity.z)
