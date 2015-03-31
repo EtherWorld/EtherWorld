@@ -3,6 +3,7 @@ var qs = require('query-string');
 
 var extend = require('extend');
 var Grapnel = require('grapnel');
+var storage = require('local-storage');
 
 var createGame = require('voxel-engine');
 var fly = require('voxel-fly');
@@ -24,6 +25,14 @@ module.exports = function (opts, setup) {
     var roomName = req.params.room;
     console.log('room: %s', roomName);
   });
+
+  var username = storage.get('username');
+  if (!username) {
+    username = prompt('Choose a username');
+    storage.set('username', username);
+  }
+
+  console.log('username: %s', username);
 
   setup = setup || defaultSetup
   var defaults = {
