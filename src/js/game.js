@@ -6,6 +6,7 @@ var Grapnel = require('grapnel');
 var storage = require('local-storage');
 
 var createGame = require('voxel-engine');
+var createClient = require('voxel-client');
 var fly = require('voxel-fly');
 var highlight = require('voxel-highlight');
 var player = require('voxel-player');
@@ -35,7 +36,7 @@ module.exports = function (opts, setup) {
   console.log('username: %s', username);
 
   setup = setup || defaultSetup
-  var defaults = {
+  var settings = {
     generate: voxel.generator.Valley,
     chunkDistance: 2,
     materials: ['#fff', '#000'],
@@ -43,10 +44,15 @@ module.exports = function (opts, setup) {
     worldOrigin: [0, 0, 0],
     controls: { discreteFire: true }
   }
-  opts = extend({}, defaults, opts || {})
+  opts = extend({}, settings, opts || {})
 
-  // setup the game and add some trees
-  var game = createGame(opts)
+  // Setup the client.
+  var game = {}
+  settings.generatorToString = settings.generate.toString()
+  game.settings = settings
+  var client = createClient(opts.server || 'ws://localhost:3000', game);
+  var game = client.game
+
   var container = opts.container || document.body
   window.game = game // for debugging
   game.appendTo(container)
