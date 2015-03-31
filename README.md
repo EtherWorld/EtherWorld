@@ -20,7 +20,7 @@ Like Etherpad but for VR.
 
 ## Development
 
-To start the server:
+To start the server and file watchers (for building the JS/CSS upon file change):
 
     npm run dev
 
