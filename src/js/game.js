@@ -1,16 +1,16 @@
 var createGame = require('voxel-engine')
+var extend = require('extend')
+var fly = require('voxel-fly')
 var highlight = require('voxel-highlight')
 var player = require('voxel-player')
 var voxel = require('voxel')
-var extend = require('extend')
-var fly = require('voxel-fly')
 var walk = require('voxel-walk')
 
 
 module.exports = function (opts, setup) {
   setup = setup || defaultSetup
   var defaults = {
-    generate: voxel.generator['Valley'],
+    generate: voxel.generator.Valley,
     chunkDistance: 2,
     materials: ['#fff', '#000'],
     materialFlatColor: true,
@@ -49,9 +49,9 @@ function defaultSetup(game, avatar) {
   var blockPosPlace, blockPosErase
   var hl = game.highlighter = highlight(game, { color: 0xff0000 })
   hl.on('highlight', function (voxelPos) { blockPosErase = voxelPos })
-  hl.on('remove', function (voxelPos) { blockPosErase = null })
+  hl.on('remove', function () { blockPosErase = null })
   hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos })
-  hl.on('remove-adjacent', function (voxelPos) { blockPosPlace = null })
+  hl.on('remove-adjacent', function () { blockPosPlace = null })
 
   // toggle between first and third person modes
   window.addEventListener('keydown', function (ev) {
@@ -61,7 +61,7 @@ function defaultSetup(game, avatar) {
   // block interaction stuff, uses highlight data
   var currentMaterial = 1
 
-  game.on('fire', function (target, state) {
+  game.on('fire', function () {
     var position = blockPosPlace
     if (position) {
       game.createBlock(position, currentMaterial)
@@ -72,11 +72,11 @@ function defaultSetup(game, avatar) {
     }
   })
 
-  game.on('tick', function() {
+  game.on('tick', function () {
     walk.render(target.playerSkin)
     var vx = Math.abs(target.velocity.x)
     var vz = Math.abs(target.velocity.z)
     if (vx > 0.001 || vz > 0.001) walk.stopWalking()
     else walk.startWalking()
   })
-};
+}
