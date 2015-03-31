@@ -27,8 +27,8 @@ body {
 }
 
 .bar-tab {
-    right: 33% !important;
-    left: 33% !important;
+  right: 33% !important;
+  left: 33% !important;
 }
 
 .errorMessage {
