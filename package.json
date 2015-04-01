@@ -44,7 +44,7 @@
     "build:css": "mkdir -p build/css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/css/app.css -o build/css/app.css",
     "build:js": "mkdir -p build/js && browserify src/js/app.js -o build/js/app.js",
     "watch": "npm run watch:css & npm run watch:js",
-    "watch:css": "onchange src/*.css src/**/*.css -- npm run build:css",
-    "watch:js": "onchange src/*.js src/**/*.js -- npm run build:js"
+    "watch:css": "onchange src/{*,**/*}.css -- npm run build:css",
+    "watch:js": "onchange {src,lib}/{*,**/*}.js -- npm run build:js"
   }
 }
