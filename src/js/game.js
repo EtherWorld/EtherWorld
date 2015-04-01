@@ -14,6 +14,29 @@ var walk = require('voxel-walk');
 
 var utils = require('../../lib/utils');
 
+var primitives = [
+  {
+    color: '#ffffff'
+  },
+  {
+    color: '#000000'
+  },
+  {
+    color: '#00e0f6'
+  },
+  {
+    color: '#74cd59'
+  },
+  {
+    color: '#cb8503'
+  },
+  {
+    color: '#697dd3'
+  },
+  {
+    color: '#ee4fcf'
+  }
+];
 
 module.exports = function (opts, setup) {
   var GET = qs.parse(window.location.search);
@@ -36,9 +59,14 @@ module.exports = function (opts, setup) {
 
   setup = setup || defaultSetup
   var defaults = {
-    generate: voxel.generator.Valley,
+    //generate: voxel.generator.Valley,
+
+    // Generate a flat world.
+    generate: function(x, y, z) {
+      return y === 1 ? 1 : 0
+    },
     chunkDistance: 2,
-    materials: ['#fff', '#000'],
+    materials: primitives.map(o => o.color),
     materialFlatColor: true,
     worldOrigin: [0, 0, 0],
     controls: { discreteFire: true }
@@ -71,12 +99,19 @@ function defaultSetup(game, avatar) {
   var target = game.controls.target()
   game.flyer = makeFly(target)
 
-  // highlight blocks when you look at them, hold <Ctrl> for block placement
+  // Highlight blocks when you look at them.
+  // If the current selected slot is the first block, then we're removing blocks.
+  // Otherwise we place the selected block.
   var blockPosPlace, blockPosErase
-  var hl = game.highlighter = highlight(game, { color: 0xff0000 })
+  var hl = game.highlighter = highlight(game, {
+    color: 0xff0000,
+    adjacentActive: function() {
+      return currentMaterial !== 0;
+    }
+  })
   hl.on('highlight', function (voxelPos) { blockPosErase = voxelPos })
   hl.on('remove', function () { blockPosErase = null })
-  hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos })
+  hl.on('highlight-adjacent', function (voxelPos) {blockPosPlace = voxelPos })
   hl.on('remove-adjacent', function () { blockPosPlace = null })
 
   // toggle between first and third person modes
@@ -85,7 +120,11 @@ function defaultSetup(game, avatar) {
   })
 
   // block interaction stuff, uses highlight data
-  var currentMaterial = 1
+  var currentMaterial = 2
+
+  // Set the initial toolbar state
+  var initialActiveSlot = document.querySelector(`#toolbar [data-slot="3"]`);
+  initialActiveSlot.classList.add('active');
 
   game.on('fire', function () {
     var position = blockPosPlace
@@ -97,6 +136,29 @@ function defaultSetup(game, avatar) {
       if (position) game.setBlock(position, 0)
     }
   })
+
+  primitives.forEach((primitive, idx) => {
+    var slotIdx = idx + 2;
+    var toolbarSlot = document.querySelector(`#toolbar [data-slot="${slotIdx}"]`);
+    toolbarSlot.style.backgroundColor = primitive.color;
+  });
+
+  window.addEventListener('keydown', e => {
+    if (String(e.key).match(/[0-9]{1}/)) {
+      console.log('change active item', e.key);
+      var oldActiveItem = document.querySelector('#toolbar .active[data-slot]');
+      if (oldActiveItem) {
+        oldActiveItem.classList.remove('active');
+      }
+
+      var newActiveSlot = document.querySelector(`#toolbar [data-slot="${e.key}"]`);
+      if (newActiveSlot) {
+        newActiveSlot.classList.add('active');
+      }
+
+      currentMaterial = parseInt(e.key, 10) - 1;
+    }
+  });
 
   game.on('tick', function () {
     walk.render(target.playerSkin)
