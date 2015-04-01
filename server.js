@@ -15,6 +15,8 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
+// voxel server
+var voxelServer = require('voxel-server')({ server: server });
 
 const NODE_ENV = process.env.NODE_ENVIRONMENT || 'development';
 
@@ -22,7 +24,6 @@ const NODE_ENV = process.env.NODE_ENVIRONMENT || 'development';
 const SPA_ROUTES = [
   '/room/:room'
 ];
-
 
 app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));
 

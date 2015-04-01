@@ -31,7 +31,9 @@
     "voxel-fly": "~0.1.2",
     "voxel-highlight": "0.0.10",
     "voxel-player": "~0.1.0",
-    "voxel-walk": "0.0.5"
+    "voxel-walk": "0.0.5",
+    "voxel-server": "caseyyee/voxel-server#master",
+    "voxel-client": "maxogden/voxel-client"
   },
   "devDependencies": {
     "nodemon": "^1.3.7",
