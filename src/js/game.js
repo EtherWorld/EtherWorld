@@ -14,55 +14,104 @@ var createClient = require('../../server/voxel-client');
 var utils = require('../../lib/utils');
 var game;
 
+var $ = utils.$;
+
 
 module.exports = function (opts, setup) {
   var GET = qs.parse(window.location.search);
   var router = new Grapnel({pushState: true});
+  var container = $('#container');
 
-  router.navigate(window.location.href);
+  var renderTemplate = function (route) {
+    container.innerHTML = $('.template[data-route="' + route + '"]').innerHTML;
+  };
 
-  router.get('/room/:room', function (req) {
-    var roomName = req.params.room;
-    console.log('room: %s', roomName);
+  var navigationFilter = function (el) {
+    var href = el.href || el.action;
+    return (
+      !href ||
+      href[0] === '#' ||
+      href.substr(0, 4) === 'http' ||
+      href.substr(0, 7) === 'mailto:' ||
+      href.substr(0, 11) === 'javascript:' ||  // jshint ignore:line
+      href.indexOf('.gif') !== -1 ||
+      href.indexOf('.png') !== -1 ||
+      href.indexOf('.jpg') !== -1 ||
+      el.getAttribute('target') ||
+      el.getAttribute('rel') === 'external'
+    );
+  };
+
+  // Hijack clicks so the SPA can handle the navigation.
+  document.body.addEventListener('click', function (e) {
+    if (e.metaKey || e.ctrlKey || e.button !== 0 || navigationFilter(e.target)) {
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    router.navigate(e.target.href);
+  }, true);
+
+
+  router.get('/', function (req) {
+    console.log('splash');
+
+    renderTemplate(this.state.route);
   });
 
-  var username = storage.get('username');
-  if (!username) {
-    username = prompt('Choose a username');
-    storage.set('username', username);
+  router.get('/room/:room?', function (req) {
+    var roomName = req.params.room;
+
+    if (!roomName) {
+      window.history.replaceState({}, null, '/room/' + utils.randomString());
+      router.trigger('navigate').trigger('divert');
+      return;
+    }
+
+    console.log('room: %s', roomName);
+
+    renderTemplate(this.state.route);
+    startGame();
+  });
+
+  function startGame() {
+    var username = storage.get('username');
+    if (!username) {
+      username = prompt('Choose a username');
+      storage.set('username', username);
+    }
+
+    console.log('username: %s', username);
+
+    // voxel game
+    setup = setup || defaultSetup;
+    opts = extend({}, opts || {});
+
+    var client = createClient(opts.server);
+
+    client.emitter.on('noMoreChunks', function() {
+      console.log("Attaching to the container and creating player")
+
+      var container = opts.container || document.body;
+
+      game = client.game;
+
+      game.appendTo(container);
+
+      if (game.notCapable()) return game
+
+      var createPlayer = player(game)
+
+      // create the player from a minecraft skin file and tell the
+      // game to use it as the main player
+      var avatar = createPlayer(opts.playerSkin || '/img/player.png')
+      avatar.possess()
+      avatar.yaw.position.set(2, 14, 4)
+
+      setup(game, avatar, client)
+    })
+    return game
   }
-
-  console.log('username: %s', username);
-
-  // voxel game
-  setup = setup || defaultSetup;
-  opts = extend({}, opts || {});
-
-  var client = createClient(opts.server);
-
-  client.emitter.on('noMoreChunks', function() {
-    console.log("Attaching to the container and creating player")
-
-    var container = opts.container || document.body;
-
-    game = client.game;
-
-    game.appendTo(container);
-
-    if (game.notCapable()) return game
-
-    var createPlayer = player(game)
-
-    // create the player from a minecraft skin file and tell the
-    // game to use it as the main player
-    var avatar = createPlayer(opts.playerSkin || '/img/player.png')
-    avatar.possess()
-    avatar.yaw.position.set(2, 14, 4)
-
-    setup(game, avatar, client)
-  })
-  return game
-}
 
 function defaultSetup(game, avatar, client) {
   // highlight blocks when you look at them, hold <Ctrl> for block placement
