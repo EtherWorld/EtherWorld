@@ -38,12 +38,12 @@
     "onchange": "^1.0.0"
   },
   "scripts": {
-    "start": "npm run build && NODE_ENVIRONMENT='production' node server",
+    "start": "export NODE_ENVIRONMENT='production' && npm run build && node server",
     "prod": "npm start",
-    "dev": "npm run build && NODE_ENVIRONMENT='development' nodemon server --watch lib/ --watch server.js & npm run watch",
+    "dev": "export NODE_ENVIRONMENT='development' && npm run build && nodemon server --watch lib/ --watch server.js & npm run watch",
     "build": "npm run build:css && npm run build:js",
     "build:css": "mkdir -p build/css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/css/app.css -o build/css/app.css",
-    "build:js": "mkdir -p build/js && browserify src/js/app.js -t [ babelify --only src/js/ ] -o build/js/app.js",
+    "build:js": "if [[ $NODE_ENVIRONMENT == 'production' ]]; then export SOURCE_MAPS=1; else export SOURCE_MAPS=0; fi && mkdir -p build/js && browserify src/js/app.js --debug=$SOURCE_MAPS -t [ babelify --only src/js/ ] -o build/js/app.js",
     "watch": "npm run watch:css & npm run watch:js",
     "watch:css": "onchange src/{*,**/*}.css -- npm run build:css",
     "watch:js": "onchange {src,lib}/{*,**/*}.js -- npm run build:js"
