@@ -5,38 +5,15 @@ var extend = require('extend');
 var Grapnel = require('grapnel');
 var storage = require('local-storage');
 
-var createGame = require('voxel-engine');
 var fly = require('voxel-fly');
 var highlight = require('voxel-highlight');
 var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
-
+var createClient = require('../../server/voxel-client');
 var utils = require('../../lib/utils');
+var game;
 
-var primitives = [
-  {
-    color: '#ffffff'
-  },
-  {
-    color: '#000000'
-  },
-  {
-    color: '#00e0f6'
-  },
-  {
-    color: '#74cd59'
-  },
-  {
-    color: '#cb8503'
-  },
-  {
-    color: '#697dd3'
-  },
-  {
-    color: '#ee4fcf'
-  }
-];
 
 module.exports = function (opts, setup) {
   var GET = qs.parse(window.location.search);
@@ -57,51 +34,38 @@ module.exports = function (opts, setup) {
 
   console.log('username: %s', username);
 
-  setup = setup || defaultSetup
-  var defaults = {
-    //generate: voxel.generator.Valley,
+  // voxel game
+  setup = setup || defaultSetup;
+  opts = extend({}, opts || {});
 
-    // Generate a flat world.
-    generate: function(x, y, z) {
-      return y === 1 ? 1 : 0
-    },
-    chunkDistance: 2,
-    materials: primitives.map(o => o.color),
-    materialFlatColor: true,
-    worldOrigin: [0, 0, 0],
-    controls: { discreteFire: true }
-  }
-  opts = extend({}, defaults, opts || {})
+  var client = createClient(opts.server);
 
-  // setup the game and add some trees
-  var game = createGame(opts)
-  var container = opts.container || document.body
-  window.game = game // for debugging
-  game.appendTo(container)
-  if (game.notCapable()) return game
+  client.emitter.on('noMoreChunks', function() {
+    console.log("Attaching to the container and creating player")
 
-  var createPlayer = player(game)
+    var container = opts.container || document.body;
 
-  // create the player from a minecraft skin file and tell the
-  // game to use it as the main player
-  var avatar = createPlayer(opts.playerSkin || '/img/player.png')
-  avatar.possess()
-  avatar.yaw.position.set(2, 14, 4)
+    game = client.game;
 
-  setup(game, avatar)
+    game.appendTo(container);
 
+    if (game.notCapable()) return game
+
+    var createPlayer = player(game)
+
+    // create the player from a minecraft skin file and tell the
+    // game to use it as the main player
+    var avatar = createPlayer(opts.playerSkin || '/img/player.png')
+    avatar.possess()
+    avatar.yaw.position.set(2, 14, 4)
+
+    setup(game, avatar, client)
+  })
   return game
 }
 
-function defaultSetup(game, avatar) {
-
-  var makeFly = fly(game)
-  var target = game.controls.target()
-  game.flyer = makeFly(target)
-
-  // Highlight blocks when you look at them.
-  // If the current selected slot is the first block, then we're removing blocks.
-  // Otherwise we place the selected block.
+function defaultSetup(game, avatar, client) {
+  // highlight blocks when you look at them, hold <Ctrl> for block placement
   var blockPosPlace, blockPosErase
   var hl = game.highlighter = highlight(game, {
     color: 0xff0000,
@@ -111,7 +75,7 @@ function defaultSetup(game, avatar) {
   })
   hl.on('highlight', function (voxelPos) { blockPosErase = voxelPos })
   hl.on('remove', function () { blockPosErase = null })
-  hl.on('highlight-adjacent', function (voxelPos) {blockPosPlace = voxelPos })
+  hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos })
   hl.on('remove-adjacent', function () { blockPosPlace = null })
 
   // toggle between first and third person modes
@@ -126,21 +90,25 @@ function defaultSetup(game, avatar) {
   var initialActiveSlot = document.querySelector(`#toolbar [data-slot="3"]`);
   initialActiveSlot.classList.add('active');
 
-  game.on('fire', function () {
+  game.on('fire', function() {
     var position = blockPosPlace
     if (position) {
       game.createBlock(position, currentMaterial)
+      client.emitter.emit('set', position, currentMaterial)
     }
     else {
       position = blockPosErase
-      if (position) game.setBlock(position, 0)
+      if (position) {
+        game.setBlock(position, 0)
+        client.emitter.emit('set', position, 0)
+      }
     }
   })
 
-  primitives.forEach((primitive, idx) => {
+  game.settings.materials.forEach((primitive, idx) => {
     var slotIdx = idx + 2;
     var toolbarSlot = document.querySelector(`#toolbar [data-slot="${slotIdx}"]`);
-    toolbarSlot.style.backgroundColor = primitive.color;
+    toolbarSlot.style.backgroundColor = primitive;
   });
 
   window.addEventListener('keydown', e => {
@@ -160,11 +128,4 @@ function defaultSetup(game, avatar) {
     }
   });
 
-  game.on('tick', function () {
-    walk.render(target.playerSkin)
-    var vx = Math.abs(target.velocity.x)
-    var vz = Math.abs(target.velocity.z)
-    if (vx > 0.001 || vz > 0.001) walk.stopWalking()
-    else walk.startWalking()
-  })
 }
