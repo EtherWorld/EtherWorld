@@ -16,7 +16,7 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
 // voxel server
-var voxelServer = require('voxel-server')({ server: server });
+var voxelServer = require('./server/voxel-server')({ server: server });
 
 const NODE_ENV = process.env.NODE_ENVIRONMENT || 'development';
 

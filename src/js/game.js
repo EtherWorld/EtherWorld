@@ -10,7 +10,7 @@ var highlight = require('voxel-highlight');
 var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
-var createClient = require('voxel-client');
+var createClient = require('../../server/voxel-client');
 var utils = require('../../lib/utils');
 var game;
 
@@ -33,7 +33,7 @@ module.exports = function (opts, setup) {
   }
 
   console.log('username: %s', username);
-  
+
   // voxel game
   setup = setup || defaultSetup;
   opts = extend({}, opts || {});
@@ -42,15 +42,15 @@ module.exports = function (opts, setup) {
 
   client.emitter.on('noMoreChunks', function() {
     console.log("Attaching to the container and creating player")
-    
+
     var container = opts.container || document.body;
 
     game = client.game;
 
     game.appendTo(container);
-    
+
     if (game.notCapable()) return game
-  
+
     var createPlayer = player(game)
 
     // create the player from a minecraft skin file and tell the
