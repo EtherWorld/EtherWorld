@@ -1,14 +1,118 @@
+@font-face {
+  src: url('../fonts/PitchWeb-Light.woff') format('woff');
+  font-family: Pitch;
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  src: url('../fonts/PitchWeb-Regular.woff') format('woff');
+  font-family: Pitch;
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  src: url('../fonts/PitchWeb-RegularItalic.woff') format('woff');
+  font-family: Pitch;
+  font-style: italic;
+  font-weight: normal;
+}
+
+@font-face {
+  src: url('../fonts/PitchWeb-Bold.woff') format('woff');
+  font-family: Pitch;
+  font-style: normal;
+  font-weight: bold;
+}
+
+@font-face {
+  src: url('../fonts/NationalWeb-Light.woff') format('woff');
+  font-family: National;
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  src: url('../fonts/NationalWeb-Black-Italic.woff') format('woff');
+  font-family: National;
+  font-style: italic;
+  font-weight: 800;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+.full--v {
+  height: 100%;
+}
+
+html {
+  font-size: 80%;
+}
+
 body {
   background-color: #f0f0f0;
-  font-family: Monospace;
-  font-size: 12px;
+  font-family: Pitch, monospace;
+  font-size: 1.5rem;
   overflow: hidden;
+}
+
+.page {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.island--splash {
+  background: rgba(0,0,0,.65);
+  box-shadow: .5rem .5rem 0 rgba(0,0,0,.85);
+  max-width: calc(100% + 10vw);
+  min-width: 40rem;
+  padding: 2rem 4rem 6rem;
+  text-align: center;
+}
+
+.island,
+.island a {
+  color: #fff;
+}
+
+h1 {
+  font-family: National, sans-serif;
+  font-size: calc(100% + 10vw);
+  font-style: italic;
+  font-weight: 800;
+  text-transform: lowercase;
+}
+
+h2 {
+  display: none;
+}
+
+.island__nav {
+  margin-top: 2rem;
+}
+
+.btn {
+  border: 3px solid #fff;
+  font-size: calc(100% + 1vw);
+  font-weight: 300;
+  text-decoration: none;
+  padding: 1rem 2rem;
+}
+
+.btn:hover {
+  background: #fff;
+  color: rgba(0,0,0,.85);
 }
 
 #container {

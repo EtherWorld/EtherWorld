@@ -20,13 +20,35 @@ var $ = utils.$;
 module.exports = function (opts, setup) {
   var GET = qs.parse(window.location.search);
   var router = new Grapnel({pushState: true});
-  var container = $('#container');
+  var main = $('#main');
 
   var renderTemplate = function (route) {
-    container.innerHTML = $('.template[data-route="' + route + '"]').innerHTML;
+    main.innerHTML = $('template[data-route="' + route + '"]').innerHTML;
   };
 
-  var navigationFilter = function (el) {
+  var _addTemplate = function (route, insertBefore) {
+    var template = $('template[data-route="' + route + '"]');
+
+    // Make a copy of the document fragment so the original template doesn't
+    // get destroyed in the DOM.
+    var clone = document.importNode(template.content, true);
+
+    if (insertBefore) {
+      main.insertBefore(clone, main.firstChild);
+    } else {
+      main.appendChild(clone);
+    }
+  };
+
+  var appendTemplate = function (route, insertBefore) {
+    _addTemplate(route, false);
+  };
+
+  var prependTemplate = function (route, insertBefore) {
+    _addTemplate(route, true);
+  };
+
+  var isValidNavigationLink = function (el) {
     var href = el.href || el.action;
     return (
       !href ||
@@ -44,7 +66,7 @@ module.exports = function (opts, setup) {
 
   // Hijack clicks so the SPA can handle the navigation.
   document.body.addEventListener('click', function (e) {
-    if (e.metaKey || e.ctrlKey || e.button !== 0 || navigationFilter(e.target)) {
+    if (e.metaKey || e.ctrlKey || e.button !== 0 || !isValidNavigationLink(e.target)) {
       return;
     }
     e.preventDefault();
@@ -54,12 +76,21 @@ module.exports = function (opts, setup) {
 
 
   router.get('/', function (req) {
-    console.log('splash');
+    console.log('[%s] Navigated to view', utils.getCurrentPath());
 
-    renderTemplate(this.state.route);
+    renderTemplate('/room/:room?');
+
+    var roomName = 'splash';
+    console.log('[%s] room: %s', this.state.route, roomName);
+
+    startGame();
+
+    prependTemplate('/');
   });
 
   router.get('/room/:room?', function (req) {
+    console.log('[%s] Navigated to view', utils.getCurrentPath());
+
     var roomName = req.params.room;
 
     if (!roomName) {
@@ -68,20 +99,23 @@ module.exports = function (opts, setup) {
       return;
     }
 
-    console.log('room: %s', roomName);
+    console.log('[%s] room: %s', utils.getCurrentPath(), roomName);
 
     renderTemplate(this.state.route);
-    startGame();
-  });
 
-  function startGame() {
     var username = storage.get('username');
     if (!username) {
       username = prompt('Choose a username');
       storage.set('username', username);
     }
 
-    console.log('username: %s', username);
+    console.log('[%s] username: %s', utils.getCurrentPath(), username);
+
+    startGame();
+  });
+
+  function startGame() {
+    return;
 
     // voxel game
     setup = setup || defaultSetup;
@@ -109,9 +143,10 @@ module.exports = function (opts, setup) {
       avatar.yaw.position.set(2, 14, 4)
 
       setup(game, avatar, client)
-    })
-    return game
+    });
   }
+};
+
 
 function defaultSetup(game, avatar, client) {
   // highlight blocks when you look at them, hold <Ctrl> for block placement

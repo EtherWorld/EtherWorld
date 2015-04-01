@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="full--v">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +8,20 @@
     <script defer src="/socket.io/socket.io.js"></script>
     <script defer src="/js/app.js"></script>
   </head>
-  <body>
-    <main id="container" class="container">
+  <body class="full--v">
+    <main id="main" class="main full--v">
     </main>
-    <script type="text/template" class="template" data-route="/">
-      <a href="/room/" class="btn" id="createRoom" class="createRoom">Create a new room</a>
-      <h2>Rooms</h2>
-      <ol class="roomList"></ol>
-    </script>
-    <script type="text/template" class="template" data-route="/room/:room?">
+    <template class="template" data-route="/">
+      <div class="page page--splash">
+        <section class="island island--splash overlay">
+          <h1>EtherWorld</h1>
+          <nav class="island__nav">
+            <a href="/room/" class="btn" id="createRoom" class="createRoom">Create a new room</a>
+          </nav>
+        </section>
+      </div>
+    </template>
+    <template class="template" data-route="/room/:room?">
       <div id="container"></div>
       <div id="crosshair"><img src="/img/crosshair.png"/></div>
       <div id="toolbar">
@@ -29,6 +34,6 @@
         <div data-slot="7"></div>
         <div data-slot="8"></div>
       </div>
-    </script>
+    </template>
   </body>
 </html>
