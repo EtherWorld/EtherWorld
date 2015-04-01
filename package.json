@@ -5,14 +5,14 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KevinGrandon/vrpad.git"
+    "url": "https://github.com/KevinGrandon/etherworld.git"
   },
-  "author": "mozvr <mozvr@mozilla.com>",
+  "author": "MozVR <mozvr@mozilla.com>",
   "license": "MPL",
   "bugs": {
-    "url": "https://github.com/KevinGrandon/mozvr/issues"
+    "url": "https://github.com/KevinGrandon/etherworld/issues"
   },
-  "homepage": "https://github.com/KevinGrandon/mozvr",
+  "homepage": "https://github.com/KevinGrandon/etherworld",
   "dependencies": {
     "autoprefixer": "^5.1.0",
     "babelify": "^5.0.4",

@@ -7,11 +7,11 @@ Like Etherpad but for VR.
 
 1. Clone the git repository from GitHub:
 
-        git clone git@github.com:KevinGrandon/vrpad.git
+        git clone git@github.com:KevinGrandon/etherworld.git
 
 2. Open the working directory:
 
-        cd vrpad
+        cd etherworld
 
 3. Install the Node dependencies:
 
