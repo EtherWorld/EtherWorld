@@ -1,5 +1,5 @@
 {
-  "name": "vrpad",
+  "name": "etherworld",
   "version": "1.0.0",
   "description": "like Etherpad but for VR",
   "main": "server.js",

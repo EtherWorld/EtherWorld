@@ -1,4 +1,4 @@
-# VRPad
+# EtherWorld
 
 Like Etherpad but for VR.
 
