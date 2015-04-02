@@ -17,8 +17,8 @@
     "autoprefixer": "^5.1.0",
     "babelify": "^5.0.4",
     "browserify": "^9.0.3",
-    "duplex-emitter": "0.1.6",
-    "ecstatic": "0.3.0",
+    "duplex-emitter": "^2.1.2",
+    "ecstatic": "^0.7.1",
     "express": "^4.12.2",
     "extend": "1.1.3",
     "grapnel": "^0.5.8",
@@ -38,8 +38,8 @@
     "voxel-highlight": "0.0.10",
     "voxel-player": "~0.1.0",
     "voxel-walk": "0.0.5",
-    "websocket-stream": "0.0.5",
-    "ws": "0.4.25"
+    "websocket-stream": "^1.4.0",
+    "ws": "^0.7.1"
   },
   "devDependencies": {
     "nodemon": "^1.3.7",
