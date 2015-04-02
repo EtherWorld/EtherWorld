@@ -6,6 +6,7 @@ var toolbar = require('toolbar')
 var randomName = require('./client-randomname')
 var crunch = require('voxel-crunch')
 var emitChat = require('./client-chat')
+var fly = require('voxel-fly');
 var highlight = require('voxel-highlight')
 var skin = require('minecraft-skin')
 var player = require('voxel-player')
@@ -50,7 +51,6 @@ Client.prototype.bindEvents = function(socket, game) {
     self.playerID = id
     if (game != null) {
   	  self.game = game
-  	  console.log("Sending local settings to the server.")
   	  emitter.emit('clientSettings', self.game.settings)
     } else {
   	  emitter.emit('clientSettings', null)
@@ -59,12 +59,12 @@ Client.prototype.bindEvents = function(socket, game) {
 
   emitter.on('settings', function(settings) {
     settings.generateChunks = false
-	//deserialise the voxel.generator function.
-	if (settings.generatorToString != null) {
-		settings.generate = eval("(" + settings.generatorToString + ")")
-	}
+    //deserialise the voxel.generator function.
+    if (settings.generatorToString != null) {
+      settings.generate = eval("(" + settings.generatorToString + ")")
+    }
     self.game = self.createGame(settings, game)
-	emitter.emit('created')
+    emitter.emit('created')
     emitter.on('chunk', function(encoded, chunk) {
       var voxels = crunch.decode(encoded, new Uint32Array(chunk.length))
       chunk.voxels = voxels
@@ -84,9 +84,13 @@ Client.prototype.createGame = function(settings, game) {
   settings.controlsDisabled = false
   self.game = engine(settings)
   self.game.settings = settings
+
+  var playerFly = false;
+
   function sendState() {
     if (!self.connected) return
     var player = self.game.controls.target()
+
     var state = {
       position: player.yaw.position,
       rotation: {
@@ -104,6 +108,15 @@ Client.prototype.createGame = function(settings, game) {
   }
 
   self.game.controls.on('data', function(state) {
+
+    // Initialize fly if we haven't done so yet.
+    // It would be better to just check for this a single time, but
+    // it seems the player object is not ready if we do this earlier.
+    if (!playerFly && self.connected) {
+      var makeFly = fly(self.game);
+      playerFly = makeFly(self.game.controls.target());
+    }
+
     var interacting = false
     Object.keys(state).map(function(control) {
       if (state[control] > 0) interacting = true

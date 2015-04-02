@@ -5,7 +5,6 @@ var extend = require('extend');
 var Grapnel = require('grapnel');
 var storage = require('local-storage');
 
-var fly = require('voxel-fly');
 var highlight = require('voxel-highlight');
 var player = require('voxel-player');
 var voxel = require('voxel');
