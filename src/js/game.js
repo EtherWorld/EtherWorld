@@ -112,19 +112,20 @@ function defaultSetup(game, avatar, client) {
   });
 
   window.addEventListener('keydown', e => {
-    if (String(e.key).match(/[0-9]{1}/)) {
-      console.log('change active item', e.key);
+    var key = String.fromCharCode(e.which);
+    if (key.match(/[0-9]{1}/)) {
+      console.log('change active item', key);
       var oldActiveItem = document.querySelector('#toolbar .active[data-slot]');
       if (oldActiveItem) {
         oldActiveItem.classList.remove('active');
       }
 
-      var newActiveSlot = document.querySelector(`#toolbar [data-slot="${e.key}"]`);
+      var newActiveSlot = document.querySelector(`#toolbar [data-slot="${key}"]`);
       if (newActiveSlot) {
         newActiveSlot.classList.add('active');
       }
 
-      currentMaterial = parseInt(e.key, 10) - 1;
+      currentMaterial = parseInt(key, 10) - 1;
     }
   });
 
