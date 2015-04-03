@@ -114,8 +114,6 @@ module.exports = function (opts, setup) {
   });
 
   function startGame() {
-    return;
-
     // voxel game
     setup = setup || defaultSetup;
     opts = extend({}, opts || {});
