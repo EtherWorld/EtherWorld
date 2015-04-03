@@ -1,4 +1,4 @@
 require('./game')({
-  container: document.querySelector('#container'),
+  containerSelector: '#container',
   server: window.location.origin.replace(/^http/, 'ws')
 });

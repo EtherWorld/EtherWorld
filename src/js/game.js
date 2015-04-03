@@ -65,7 +65,9 @@ module.exports = function (opts, setup) {
 
   // Hijack clicks so the SPA can handle the navigation.
   document.body.addEventListener('click', function (e) {
-    if (e.metaKey || e.ctrlKey || e.button !== 0 || !isValidNavigationLink(e.target)) {
+    if (e.target.tagName.toLowerCase() !== 'a' || e.metaKey || e.ctrlKey ||
+        e.button !== 0 || !isValidNavigationLink(e.target)) {
+
       return;
     }
     e.preventDefault();
@@ -123,7 +125,7 @@ module.exports = function (opts, setup) {
     client.emitter.on('noMoreChunks', function() {
       console.log("Attaching to the container and creating player")
 
-      var container = opts.container || document.body;
+      var container = opts.containerSelector ? $(opts.containerSelector) : (opts.container || document.body);
 
       game = client.game;
 
@@ -168,7 +170,7 @@ function defaultSetup(game, avatar, client) {
   var currentMaterial = 2
 
   // Set the initial toolbar state
-  var initialActiveSlot = document.querySelector(`#toolbar [data-slot="3"]`);
+  var initialActiveSlot = $(`#toolbar [data-slot="3"]`);
   initialActiveSlot.classList.add('active');
 
   game.on('fire', function() {
@@ -188,7 +190,7 @@ function defaultSetup(game, avatar, client) {
 
   game.settings.materials.forEach((primitive, idx) => {
     var slotIdx = idx + 2;
-    var toolbarSlot = document.querySelector(`#toolbar [data-slot="${slotIdx}"]`);
+    var toolbarSlot = $(`#toolbar [data-slot="${slotIdx}"]`);
     toolbarSlot.style.backgroundColor = primitive;
   });
 
@@ -196,12 +198,12 @@ function defaultSetup(game, avatar, client) {
     var key = String.fromCharCode(e.which);
     if (key.match(/[0-9]{1}/)) {
       console.log('change active item', key);
-      var oldActiveItem = document.querySelector('#toolbar .active[data-slot]');
+      var oldActiveItem = $('#toolbar .active[data-slot]');
       if (oldActiveItem) {
         oldActiveItem.classList.remove('active');
       }
 
-      var newActiveSlot = document.querySelector(`#toolbar [data-slot="${key}"]`);
+      var newActiveSlot = $(`#toolbar [data-slot="${key}"]`);
       if (newActiveSlot) {
         newActiveSlot.classList.add('active');
       }
