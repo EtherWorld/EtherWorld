@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="full--v">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,18 +8,32 @@
     <script defer src="/socket.io/socket.io.js"></script>
     <script defer src="/js/app.js"></script>
   </head>
-  <body>
-    <div id="container"></div>
-    <div id="crosshair"><img src="/img/crosshair.png"/></div>
-    <div id="toolbar">
-      <div data-slot="1"></div>
-      <div data-slot="2"></div>
-      <div data-slot="3"></div>
-      <div data-slot="4"></div>
-      <div data-slot="5"></div>
-      <div data-slot="6"></div>
-      <div data-slot="7"></div>
-      <div data-slot="8"></div>
-    </div>
+  <body class="full--v">
+    <main id="main" class="main full--v">
+    </main>
+    <template class="template" data-route="/">
+      <div class="page page--splash">
+        <section class="island island--splash overlay">
+          <h1>EtherWorld</h1>
+          <nav class="island__nav">
+            <a href="/room/" class="btn" id="createRoom" class="createRoom">Create a new room</a>
+          </nav>
+        </section>
+      </div>
+    </template>
+    <template class="template" data-route="/room/:room?">
+      <div id="container"></div>
+      <div id="crosshair"><img src="/img/crosshair.png"/></div>
+      <div id="toolbar">
+        <div data-slot="1"></div>
+        <div data-slot="2"></div>
+        <div data-slot="3"></div>
+        <div data-slot="4"></div>
+        <div data-slot="5"></div>
+        <div data-slot="6"></div>
+        <div data-slot="7"></div>
+        <div data-slot="8"></div>
+      </div>
+    </template>
   </body>
 </html>
