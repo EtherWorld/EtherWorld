@@ -39,7 +39,8 @@
     "voxel-player": "~0.1.0",
     "voxel-walk": "0.0.5",
     "websocket-stream": "^1.4.0",
-    "ws": "^0.7.1"
+    "ws": "^0.7.1",
+    "voxel-rescue": "git://github.com/caseyyee/voxel-rescue#master"
   },
   "devDependencies": {
     "nodemon": "^1.3.7",
