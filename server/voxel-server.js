@@ -40,7 +40,7 @@ module.exports = function(opts) {
   var settings = {
     // Generate a flat world.
     generate: function(x, y, z) {
-      return y === 1 ? 1 : 0
+      return y <= 1 ? 1 : 0
     },
     chunkDistance: 2,
     materials: primitives.map(function(o) { return o.color }),
