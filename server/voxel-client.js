@@ -2,7 +2,6 @@ var url = require('url')
 var websocket = require('websocket-stream')
 var engine = require('voxel-engine')
 var duplexEmitter = require('duplex-emitter')
-var toolbar = require('toolbar')
 var randomName = require('./client-randomname')
 var crunch = require('voxel-crunch')
 var emitChat = require('./client-chat')
@@ -18,7 +17,6 @@ function Client(server, game) {
   if(!(this instanceof Client)) {
     return new Client(server, game)
   }
-  // this.blockSelector = toolbar({el: '#tools'})
   this.playerID
   this.lastProcessedSeq = 0
   this.localInputs = []
