@@ -13,6 +13,9 @@
     "url": "https://github.com/KevinGrandon/etherworld/issues"
   },
   "homepage": "https://github.com/KevinGrandon/etherworld",
+  "engines": {
+    "node": "0.10.31"
+  },
   "dependencies": {
     "autoprefixer": "^5.1.0",
     "babelify": "^5.0.4",
