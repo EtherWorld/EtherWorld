@@ -138,6 +138,7 @@ Client.prototype.createGame = function(settings, game) {
   }, 1000)
 
   emitter.on('leave', function(id) {
+    console.log('player leaving', id);
     if (!self.others[id]) return
     self.game.scene.remove(self.others[id].mesh)
     delete self.others[id]
