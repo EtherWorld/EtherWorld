@@ -14,7 +14,7 @@ var player = require('voxel-player')
 module.exports = Client
 
 function Client(server, game) {
-  if(!(this instanceof Client)) {
+  if (!(this instanceof Client)) {
     return new Client(server, game)
   }
   this.playerID
@@ -33,7 +33,9 @@ function Client(server, game) {
 Client.prototype.connect = function(server, game) {
   var self = this
   var socket = websocket(server)
-  socket.on('end', function() { self.connected = false })
+  socket.on('end', function() {
+    self.connected = false
+  })
   this.socket = socket
   this.bindEvents(socket, game)
 }
@@ -48,16 +50,16 @@ Client.prototype.bindEvents = function(socket, game) {
     console.log('got id', id)
     self.playerID = id
     if (game != null) {
-  	  self.game = game
-  	  emitter.emit('clientSettings', self.game.settings)
+      self.game = game
+      emitter.emit('clientSettings', self.game.settings)
     } else {
-  	  emitter.emit('clientSettings', null)
+      emitter.emit('clientSettings', null)
     }
   })
 
   emitter.on('settings', function(settings) {
     settings.generateChunks = false
-    //deserialise the voxel.generator function.
+      //deserialise the voxel.generator function.
     if (settings.generatorToString != null) {
       settings.generate = eval("(" + settings.generatorToString + ")")
     }
@@ -176,6 +178,6 @@ Client.prototype.updatePlayerPosition = function(id, update) {
   playerSkin.head.rotation.z = scale(update.rotation.x, -1.5, 1.5, -0.75, 0.75)
 }
 
-function scale( x, fromLow, fromHigh, toLow, toHigh ) {
-  return ( x - fromLow ) * ( toHigh - toLow ) / ( fromHigh - fromLow ) + toLow
+function scale(x, fromLow, fromHigh, toLow, toHigh) {
+  return (x - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow
 }
