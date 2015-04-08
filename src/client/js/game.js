@@ -177,12 +177,13 @@ function defaultSetup(game, avatar, client) {
     var position = blockPosPlace
     if (position) {
       game.createBlock(position, currentMaterial)
-      client.emitter.emit('set', position, currentMaterial)
+      client.emitter.emit('set', position, currentMaterial, { link: 'http://www.google.com' })
     }
     else {
       position = blockPosErase
       if (position) {
-        game.setBlock(position, 0)
+        var bd = client.blockdata.get(position[0], position[1], position[2]);
+        console.log(bd);
         client.emitter.emit('set', position, 0)
       }
     }
@@ -211,5 +212,4 @@ function defaultSetup(game, avatar, client) {
       currentMaterial = parseInt(key, 10) - 1;
     }
   });
-
 }
