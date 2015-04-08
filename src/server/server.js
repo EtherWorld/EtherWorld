@@ -1,8 +1,9 @@
 var fs = require('fs');
+var path = require('path');
 
-var Lobby = require('./lib/lobby');
-var storage = require('./lib/storage');
-var utils = require('./lib/utils');
+var Lobby = require('./../lib/lobby');
+var storage = require('./../lib/storage');
+var utils = require('./../lib/utils');
 
 // Socket.io mapping.
 var sockets = {};
@@ -16,9 +17,13 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
 // voxel server
-var voxelServer = require('./server/voxel-server')({ server: server });
+var voxelServer = require('./voxel-server')({ server: server });
 
 const NODE_ENV = process.env.NODE_ENVIRONMENT || 'development';
+
+const ROOT_DIR = path.normalize(__dirname + '/../..');
+const BUILD_DIR = ROOT_DIR + '/build';
+const CLIENT_DIR = ROOT_DIR + '/src/client';
 
 // Routes that should render `/index.html` and get routed on the client.
 const SPA_ROUTES = [
@@ -27,9 +32,9 @@ const SPA_ROUTES = [
 
 app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));
 
-app.use('/js/', express.static(__dirname + '/build/js'));
-app.use('/css/', express.static(__dirname + '/build/css'));
-app.use(express.static(__dirname + '/src'));
+app.use('/js/', express.static(BUILD_DIR + '/js'));
+app.use('/css/', express.static(BUILD_DIR + '/css'));
+app.use(express.static(CLIENT_DIR));
 
 io.on('connection', function (socket) {
   console.log('got connection');
@@ -72,7 +77,7 @@ app.get('/room/:room?', function (req, res, next) {
 
 SPA_ROUTES.forEach(function (route) {
   app.get(route, function (req, res) {
-    res.sendFile(__dirname + '/src/index.html');
+    res.sendFile(CLIENT_DIR + '/index.html');
   })
 });
 

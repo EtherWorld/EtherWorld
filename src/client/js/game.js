@@ -9,7 +9,7 @@ var highlight = require('voxel-highlight');
 var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
-var createClient = require('../../server/voxel-client');
+var createClient = require('./voxel-client');
 var utils = require('../../lib/utils');
 var game;
 

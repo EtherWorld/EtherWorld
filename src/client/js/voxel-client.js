@@ -2,7 +2,6 @@ var url = require('url')
 var websocket = require('websocket-stream')
 var engine = require('voxel-engine')
 var duplexEmitter = require('duplex-emitter')
-var randomName = require('./client-randomname')
 var crunch = require('voxel-crunch')
 var emitChat = require('./client-chat')
 var fly = require('voxel-fly');
@@ -99,12 +98,6 @@ Client.prototype.createGame = function(settings, game) {
       }
     }
     emitter.emit('state', state)
-  }
-
-  var name = localStorage.getItem('name')
-  if (!name) {
-    name = randomName()
-    localStorage.setItem('name', name)
   }
 
   self.game.controls.on('data', function(state) {
