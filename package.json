@@ -2,7 +2,7 @@
   "name": "etherworld",
   "version": "1.0.0",
   "description": "like Etherpad but for VR",
-  "main": "server.js",
+  "main": "src/server/server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/KevinGrandon/etherworld.git"
@@ -48,14 +48,14 @@
     "onchange": "^1.0.0"
   },
   "scripts": {
-    "start": "export NODE_ENVIRONMENT='production' && npm run build && node server",
+    "start": "export NODE_ENVIRONMENT='production' && npm run build && node src/server/server",
     "prod": "npm start",
-    "dev": "export NODE_ENVIRONMENT='development' && npm run build && nodemon server --watch lib/ --watch server.js & npm run watch",
+    "dev": "export NODE_ENVIRONMENT='development' && npm run build && nodemon src/server/server --watch src/ & npm run watch",
     "build": "npm run build:css && npm run build:js",
-    "build:css": "mkdir -p build/css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/css/app.css -o build/css/app.css",
-    "build:js": "if [[ $NODE_ENVIRONMENT == 'production' ]]; then echo export SOURCE_MAPS=0; else export SOURCE_MAPS=1; fi ; echo $SOURCE_MAPS && mkdir -p build/js && browserify src/js/app.js --debug=$SOURCE_MAPS -t [ babelify --only src/js/ ] -o build/js/app.js",
+    "build:css": "mkdir -p build/css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/client/css/app.css -o build/css/app.css",
+    "build:js": "if [[ $NODE_ENVIRONMENT == 'production' ]]; then echo export SOURCE_MAPS=0; else export SOURCE_MAPS=1; fi ; echo $SOURCE_MAPS && mkdir -p build/js && browserify src/client/js/app.js --debug=$SOURCE_MAPS -t [ babelify --only src/client/js/ ] -o build/js/app.js",
     "watch": "npm run watch:css & npm run watch:js",
-    "watch:css": "onchange src/{*,**/*}.css -- npm run build:css",
-    "watch:js": "onchange {src,lib}/{*,**/*}.js -- npm run build:js"
+    "watch:css": "onchange src/client/{*,**/*}.css -- npm run build:css",
+    "watch:js": "onchange src/{*,**/*}.js -- npm run build:js"
   }
 }
