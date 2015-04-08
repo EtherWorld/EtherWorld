@@ -9,6 +9,7 @@ var highlight = require('voxel-highlight');
 var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
+var rescue = require('voxel-rescue');
 var createClient = require('../../server/voxel-client');
 var utils = require('../../lib/utils');
 var game;
@@ -160,6 +161,15 @@ function defaultSetup(game, avatar, client) {
   hl.on('remove', function () { blockPosErase = null })
   hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos })
   hl.on('remove-adjacent', function () { blockPosPlace = null })
+
+  rescue(game, {
+    teleport: true,
+    position: [0, 30, 0],
+    dangerZone: {
+      lower: { x: -Infinity, y: -Infinity, z: -Infinity },
+      upper: { x: Infinity, y: -50, z: Infinity }
+    }
+  });
 
   // toggle between first and third person modes
   window.addEventListener('keydown', function (ev) {
