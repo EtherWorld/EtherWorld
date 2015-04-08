@@ -8,7 +8,10 @@ var fly = require('voxel-fly');
 var highlight = require('voxel-highlight')
 var skin = require('minecraft-skin')
 var player = require('voxel-player')
-//var game
+var createPlugins = require('voxel-plugins');
+
+// voxel-plugins
+require('voxel-blockdata'); 
 
 module.exports = Client
 
@@ -69,11 +72,18 @@ Client.prototype.bindEvents = function(socket, game) {
       chunk.voxels = voxels
       self.game.showChunk(chunk)
     })
+
+    // load voxel-plugins
+    var plugins = createPlugins(self.game, {require: require});
+    plugins.add('voxel-blockdata', {});
+    plugins.loadAll();
+    self.blockdata = self.game.plugins.get('voxel-blockdata');
   })
 
   // fires when server sends us voxel edits
-  emitter.on('set', function(pos, val) {
-    self.game.setBlock(pos, val)
+  emitter.on('set', function(pos, val, data) {
+    self.game.setBlock(pos, val);
+    if (data) self.blockdata.set(pos[0], pos[1], pos[2], data);
   })
 }
 

@@ -8,6 +8,10 @@ var uuid = require('uuid').v4
 var crunch = require('voxel-crunch')
 var engine = require('voxel-engine')
 var voxel = require('voxel')
+var createPlugins = require('voxel-plugins');
+
+// voxel-plugins
+require('voxel-blockdata'); 
 
 var primitives = [{
   color: '#ffffff'
@@ -88,6 +92,14 @@ module.exports = function(opts) {
   }
 
   setInterval(sendUpdate, 1000 / 22) // 45ms
+
+  // load voxel-plugins
+  var plugins = createPlugins(game, {require:require})
+  plugins.add('voxel-blockdata',{})
+  plugins.loadAll()
+
+  var blockdata = game.plugins.get('voxel-blockdata');
+
 
   wss.on('connection', function(ws) {
     // turn 'raw' websocket into a stream
@@ -180,12 +192,12 @@ module.exports = function(opts) {
       })
     })
 
-    emitter.on('set', function(pos, val) {
-      game.setBlock(pos, val)
+    emitter.on('set', function(pos, val, data) {
       var chunkPos = game.voxels.chunkAtPosition(pos)
       var chunkID = chunkPos.join('|')
       if (chunkCache[chunkID]) delete chunkCache[chunkID]
-      broadcast(null, 'set', pos, val)
+      if (data) blockdata.set(pos[0], pos[1], pos[2], data)
+      broadcast(null, 'set', pos, val, data)
     })
 
   })
