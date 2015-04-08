@@ -8,7 +8,9 @@ if (global.window) {
   LocalStorage.prototype.get = LocalStorage.prototype.getItem;
   LocalStorage.prototype.remove = LocalStorage.prototype.removeItem;
 
-  ls = new LocalStorage('./db');
+  var path = require('path').normalize(__dirname + '../../../db');
+
+  ls = new LocalStorage(path);
 }
 
 

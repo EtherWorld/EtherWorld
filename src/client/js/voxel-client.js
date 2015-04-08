@@ -1,4 +1,3 @@
-var url = require('url');
 var websocket = require('websocket-stream');
 var engine = require('voxel-engine');
 var duplexEmitter = require('duplex-emitter');
@@ -15,22 +14,24 @@ require('voxel-blockdata');
 
 module.exports = Client;
 
-function Client(server, game) {
+function Client(opts) {
   if (!(this instanceof Client)) {
-    return new Client(server, game);
-  };
+    return new Client(opts);
+  }
+  this.opts = opts || {}
   this.playerID;
   this.lastProcessedSeq = 0;
   this.localInputs = [];
   this.connected = false;
   this.currentMaterial = 1;
   this.lerpPercent = 0.1;
-  this.server = server || 'ws://' + url.parse(window.location.href).host;
+  this.server = opts.server || window.location.origin.replace(/^http/, 'ws');
   this.others = {};
-  this.connect(server, game);
+  this.connect(this.server, opts.game);
   this.game;
+  this.room = opts.room;
   window.others = this.others;
-};
+}
 
 Client.prototype.connect = function(server, game) {
   var self = this;
@@ -66,7 +67,7 @@ Client.prototype.bindEvents = function(socket, game) {
       settings.generate = eval("(" + settings.generatorToString + ")");
     }
     self.game = self.createGame(settings, game);
-    emitter.emit('created');
+    emitter.emit('created', self.room);
     emitter.on('chunk', function(encoded, chunk) {
       var voxels = crunch.decode(encoded, new Uint32Array(chunk.length));
       chunk.voxels = voxels;

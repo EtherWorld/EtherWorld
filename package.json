@@ -29,35 +29,39 @@
     "minecraft-skin": "^0.1.2",
     "morgan": "^1.5.2",
     "node-localstorage": "^0.5.0",
+    "object.observe": "^0.2.4",
     "query-string": "^1.0.0",
     "socket.io": "^1.3.5",
     "underscore": "^1.8.2",
     "uuid": "^2.0.1",
     "voxel": "~0.5.0",
+    "voxel-blockdata": "^0.2.1",
     "voxel-crunch": "^0.2.1",
     "voxel-engine": "~0.20.1",
     "voxel-fly": "~0.1.2",
     "voxel-highlight": "0.0.10",
     "voxel-player": "~0.1.0",
+    "voxel-plugins": "^0.3.2",
     "voxel-walk": "0.0.5",
     "websocket-stream": "^1.4.0",
-    "ws": "^0.7.1",
-    "voxel-plugins": "~0.3.2",
-    "voxel-blockdata": "~0.2.1"
+    "ws": "^0.7.1"
   },
   "devDependencies": {
     "nodemon": "^1.3.7",
     "onchange": "^1.0.0"
   },
   "scripts": {
-    "start": "export NODE_ENVIRONMENT='production' && npm run build && node src/server/server",
+    "start": "export NODE_ENVIRONMENT='production' && npm run mkdir:db && npm run build && node src/server/server",
     "prod": "npm start",
-    "dev": "export NODE_ENVIRONMENT='development' && npm run build && nodemon src/server/server --watch src/lib/  --watch src/server/ --watch src/client/index.html & npm run watch",
+    "dev": "export NODE_ENVIRONMENT='development' && npm run mkdir:db && npm run build && nodemon src/server/server --watch src/shared/  --watch src/server/ --watch src/client/index.html & npm run watch",
     "build": "npm run build:css && npm run build:js",
-    "build:css": "mkdir -p build/css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/client/css/app.css -o build/css/app.css",
-    "build:js": "if [[ $NODE_ENVIRONMENT == 'production' ]]; then echo export SOURCE_MAPS=0; else export SOURCE_MAPS=1; fi ; echo $SOURCE_MAPS && mkdir -p build/js && browserify src/client/js/app.js --debug=$SOURCE_MAPS -t [ babelify --only src/client/js/ ] -o build/js/app.js",
+    "build:css": "npm run mkdir:css && autoprefixer --browsers 'last 10 versions' --map --no-cascade src/client/css/app.css -o build/css/app.css",
+    "build:js": "if [[ $NODE_ENVIRONMENT == 'production' ]]; then echo export SOURCE_MAPS=0; else export SOURCE_MAPS=1; fi ; echo $SOURCE_MAPS && npm run mkdir:js && browserify src/client/js/app.js --debug=$SOURCE_MAPS -t [ babelify --only src/client/js/ ] -o build/js/app.js",
     "watch": "npm run watch:css & npm run watch:js",
     "watch:css": "onchange src/client/{*,**/*}.css -- npm run build:css",
-    "watch:js": "onchange src/{client,lib}/{*,**/*}.js -- npm run build:js"
+    "watch:js": "onchange src/{client,shared}/{*,**/*}.js -- npm run build:js",
+    "mkdir:db": "mkdir -p db",
+    "mkdir:css": "mkdir -p build/css",
+    "mkdir:js": "mkdir -p build/js"
   }
 }

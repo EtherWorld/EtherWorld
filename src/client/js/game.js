@@ -10,7 +10,7 @@ var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
 var createClient = require('./voxel-client');
-var utils = require('../../lib/utils');
+var utils = require('../../shared/utils');
 var game;
 
 var $ = utils.$;
@@ -108,15 +108,18 @@ module.exports = function (opts, setup) {
 
     console.log('[%s] username: %s', utils.getCurrentPath(), username);
 
-    startGame();
+    startGame(roomName);
   });
 
-  function startGame() {
+  function startGame(roomName) {
     // voxel game
     setup = setup || defaultSetup;
     opts = extend({}, opts || {});
 
-    var client = createClient(opts.server);
+    var client = createClient({
+      server: opts.server,
+      room: roomName
+    });
 
     client.emitter.on('noMoreChunks', function() {
       console.log("Attaching to the container and creating player")
