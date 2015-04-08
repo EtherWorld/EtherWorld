@@ -160,6 +160,10 @@ h2 {
   line-height: 50px;
 }
 
+#toolbar div[data-element="link"] {
+  background: url(/img/portal.png) no-repeat center / auto 100%;
+}
+
 /* Voxel plugin hooks */
 #stats {
   bottom: 0;
