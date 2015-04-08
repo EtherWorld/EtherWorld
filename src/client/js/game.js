@@ -79,12 +79,8 @@ module.exports = function (opts, setup) {
   router.get('/', function (req) {
     console.log('[%s] Navigated to view', utils.getCurrentPath());
 
-    renderTemplate('/room/:room?');
-
     var roomName = 'splash';
     console.log('[%s] room: %s', this.state.route, roomName);
-
-    startGame();
 
     prependTemplate('/');
   });
