@@ -173,13 +173,22 @@ function defaultSetup(game, avatar, client) {
     var position = blockPosPlace
     if (position) {
       game.createBlock(position, currentMaterial)
-      client.emitter.emit('set', position, currentMaterial, { link: 'http://www.google.com' })
+
+      var data;
+      var LINK_BLOCK_ID = 8;
+      if (currentMaterial === LINK_BLOCK_ID) {
+        data = { link: prompt('Enter a URL:') };
+      }
+      client.emitter.emit('set', position, currentMaterial, data)
     }
     else {
       position = blockPosErase
       if (position) {
         var bd = client.blockdata.get(position[0], position[1], position[2]);
-        console.log(bd);
+        if (bd) {
+          window.open(bd.link, '_blank');
+          return;
+        }
         client.emitter.emit('set', position, 0)
       }
     }
