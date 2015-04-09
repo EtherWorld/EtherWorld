@@ -17,6 +17,14 @@ Like Etherpad but for VR.
 
         npm install
 
+4. Install Redis:
+
+        brew install redis
+
+5. Set up Redis:
+
+        brew info redis
+
 
 ## Development
 
