@@ -70,6 +70,9 @@ module.exports = function(opts) {
     Object.keys(clients).map(function(client) {
       if (client === id) return
       if (client in clients) {
+        if (id && clients[id].room !== clients[client].room) {
+          return;
+        }
         clients[client].emit(cmd, arg1, arg2, arg3);
       }
     });
@@ -179,7 +182,7 @@ module.exports = function(opts) {
       message.text = (message.text || '').substr(0, 140);
       if (message.text.length === 0) return;
       console.log('[%j] chat: %s', message.timestamp, message);
-      broadcast(null, 'message', message, null, null, emitter);
+      broadcast(id, 'message', message, null, null, emitter);
     });
 
     // give the user the initial game settings
@@ -216,7 +219,7 @@ module.exports = function(opts) {
       var chunkID = chunkPos.join('|');
       if (chunkCache[chunkID]) delete chunkCache[chunkID];
       if (data) blockdata.set(pos[0], pos[1], pos[2], data);
-      broadcast(null, 'set', pos, val, data, emitter);
+      broadcast(id, 'set', pos, val, data, emitter);
     });
   });
 
