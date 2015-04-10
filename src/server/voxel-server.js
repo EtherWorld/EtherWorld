@@ -65,14 +65,25 @@ module.exports = function(opts) {
   var usingClientSettings = false;
 
 
-  // simple version of socket.io's sockets.emit
+  /**
+   * Simple version of socket.io's sockets.emit.
+   * If an id is passed in, we do not emit to the the player.
+   * If an emitter is passed in, we do not emit to the same room as the emitter.
+   */
   function broadcast(id, cmd, arg1, arg2, arg3, emitter) {
     Object.keys(clients).map(function(client) {
       if (client === id) return
       if (client in clients) {
+
+        // Do not broadcast messages to other rooms if we have a playerID.
         if (id && clients[id] && clients[id].room !== clients[client].room) {
           return;
         }
+        // Do not broadcast messages to other rooms if we do not have an ID.
+        if (!id && emitter && emitter.room !== clients[client].room) {
+          return;
+        }
+
         clients[client].emit(cmd, arg1, arg2, arg3);
       }
     });
@@ -122,8 +133,8 @@ module.exports = function(opts) {
       };
     });
 
-    for (var i in updatesByRoom) {
-      sendToRoom(i, 'update', updatesByRoom[i]);
+    for (var roomId in updatesByRoom) {
+      sendToRoom(roomId, 'update', updatesByRoom[roomId]);
     }
   }
 
@@ -199,7 +210,7 @@ module.exports = function(opts) {
       message.text = (message.text || '').substr(0, 140);
       if (message.text.length === 0) return;
       console.log('[%j] chat: %s', message.timestamp, message);
-      broadcast(id, 'message', message, null, null, emitter);
+      broadcast(null, 'message', message, null, null, emitter);
     });
 
     // give the user the initial game settings
@@ -236,7 +247,7 @@ module.exports = function(opts) {
       var chunkID = chunkPos.join('|');
       if (chunkCache[chunkID]) delete chunkCache[chunkID];
       if (data) blockdata.set(pos[0], pos[1], pos[2], data);
-      broadcast(id, 'set', pos, val, data, emitter);
+      broadcast(null, 'set', pos, val, data, emitter);
     });
   });
 
