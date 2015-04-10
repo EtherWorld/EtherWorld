@@ -10,8 +10,10 @@ var engine = require('voxel-engine')
 var voxel = require('voxel')
 var createPlugins = require('voxel-plugins');
 
+var PermaObject = require('./lib/permaobject');
+
 // voxel-plugins
-require('voxel-blockdata'); 
+require('voxel-blockdata');
 
 var primitives = [{
   color: '#ffffff'
@@ -50,34 +52,48 @@ module.exports = function(opts) {
     avatarInitialPosition: [2, 20, 2]
   }
 
-  var game = engine(settings)
+  var game = engine(settings);
 
-  var server = (opts.server) ? opts.server : http.createServer(ecstatic(path.join(__dirname, 'www')))
+  var server = (opts.server) ? opts.server : http.createServer(ecstatic(path.join(__dirname, 'www')));
 
   var wss = new WebSocketServer({
     server: server
-  })
-  var clients = {}
-  var chunkCache = {}
-  var usingClientSettings
+  });
+
+  var clients = {};
+  var chunkCache = {};
+  var usingClientSettings = false;
+
 
   // simple version of socket.io's sockets.emit
-  function broadcast(id, cmd, arg1, arg2, arg3) {
+  function broadcast(id, cmd, arg1, arg2, arg3, emitter) {
     Object.keys(clients).map(function(client) {
       if (client === id) return
       if (client in clients) {
         clients[client].emit(cmd, arg1, arg2, arg3);
       }
-    })
+    });
+
+    if (emitter) {
+      if (cmd === 'message') {
+        emitter.messages.push([arg1, arg2, arg3]);
+      } else if (cmd === 'set') {
+        emitter.blocks.push([arg1, arg2, arg3]);
+      }
+    }
   }
+
+
+  var update = {
+    positions: {},
+    date: +new Date()
+  };
 
   function sendUpdate() {
     var clientKeys = Object.keys(clients)
     if (clientKeys.length === 0) return
-    var update = {
-      positions: {},
-      date: +new Date()
-    }
+    update.positions = {};
+    update.date = +new Date();
     clientKeys.map(function(key) {
       var emitter = clients[key]
       update.positions[key] = {
@@ -87,8 +103,8 @@ module.exports = function(opts) {
           y: emitter.player.rotation.y
         }
       }
-    })
-    broadcast(false, 'update', update)
+    });
+    broadcast(null, 'update', update);
   }
 
   setInterval(sendUpdate, 1000 / 22) // 45ms
@@ -101,7 +117,7 @@ module.exports = function(opts) {
   var blockdata = game.plugins.get('voxel-blockdata');
 
 
-  wss.on('connection', function(ws) {
+  wss.on('connection', function (ws) {
     // turn 'raw' websocket into a stream
     var stream = websocket(ws)
 
@@ -159,13 +175,12 @@ module.exports = function(opts) {
       broadcast(id, 'leave', id)
     }
 
-    emitter.on('message', function(message) {
-      if (!message.text) return
-      if (message.text.length > 140) message.text = message.text.substr(0, 140)
-      if (message.text.length === 0) return
-      console.log('chat', message)
-      broadcast(null, 'message', message)
-    })
+    emitter.on('message', function (message) {
+      message.text = (message.text || '').substr(0, 140);
+      if (message.text.length === 0) return;
+      console.log('[%j] chat: %s', message.timestamp, message);
+      broadcast(null, 'message', message, null, null, emitter);
+    });
 
     // give the user the initial game settings
     if (settings.generate != null) {
@@ -175,7 +190,11 @@ module.exports = function(opts) {
 
     // fires when the user tells us they are
     // ready for chunks to be sent
-    emitter.on('created', function() {
+    emitter.on('created', function (room) {
+      emitter.room = room;
+      emitter.messages = new PermaObject('messages__' + room, []);
+      emitter.blocks = new PermaObject('blocks__' + room, []);
+
       sendInitialChunks(emitter)
         // fires when client sends us new input state
       emitter.on('state', function(state) {
@@ -193,14 +212,13 @@ module.exports = function(opts) {
     })
 
     emitter.on('set', function(pos, val, data) {
-      var chunkPos = game.voxels.chunkAtPosition(pos)
-      var chunkID = chunkPos.join('|')
-      if (chunkCache[chunkID]) delete chunkCache[chunkID]
-      if (data) blockdata.set(pos[0], pos[1], pos[2], data)
-      broadcast(null, 'set', pos, val, data)
-    })
-
-  })
+      var chunkPos = game.voxels.chunkAtPosition(pos);
+      var chunkID = chunkPos.join('|');
+      if (chunkCache[chunkID]) delete chunkCache[chunkID];
+      if (data) blockdata.set(pos[0], pos[1], pos[2], data);
+      broadcast(null, 'set', pos, val, data, emitter);
+    });
+  });
 
   function sendInitialChunks(emitter) {
     Object.keys(game.voxels.chunks).map(function(chunkID) {
@@ -216,7 +234,15 @@ module.exports = function(opts) {
         length: chunk.voxels.length
       })
     })
-    emitter.emit('noMoreChunks', true)
+    emitter.emit('noMoreChunks', true);
+
+    // Send messages and blocks that were persisted on the server.
+    emitter.messages.forEach(function (message) {
+      emitter.emit('message', message);
+    });
+    emitter.blocks.forEach(function (block) {
+      emitter.emit('set', block[0], block[1], block[2]);
+    });
   }
 
   return game

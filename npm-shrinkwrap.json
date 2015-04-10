@@ -651,7 +651,7 @@
         },
         "lodash": {
           "version": "3.6.0",
-          "from": "lodash@>= 3.2.0 < 4.0.0",
+          "from": "https://registry.npmjs.org/lodash/-/lodash-3.6.0.tgz",
           "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.6.0.tgz"
         }
       }
@@ -2014,12 +2014,12 @@
         },
         "debug": {
           "version": "2.1.3",
-          "from": "debug@~2.1.1",
+          "from": "https://registry.npmjs.org/debug/-/debug-2.1.3.tgz",
           "resolved": "https://registry.npmjs.org/debug/-/debug-2.1.3.tgz",
           "dependencies": {
             "ms": {
               "version": "0.7.0",
-              "from": "ms@0.7.0",
+              "from": "https://registry.npmjs.org/ms/-/ms-0.7.0.tgz",
               "resolved": "https://registry.npmjs.org/ms/-/ms-0.7.0.tgz"
             }
           }
@@ -2047,6 +2047,11 @@
       "version": "0.5.0",
       "from": "https://registry.npmjs.org/node-localstorage/-/node-localstorage-0.5.0.tgz",
       "resolved": "https://registry.npmjs.org/node-localstorage/-/node-localstorage-0.5.0.tgz"
+    },
+    "object.observe": {
+      "version": "0.2.4",
+      "from": "object.observe@*",
+      "resolved": "https://registry.npmjs.org/object.observe/-/object.observe-0.2.4.tgz"
     },
     "query-string": {
       "version": "1.0.0",
@@ -2540,7 +2545,7 @@
     },
     "voxel-blockdata": {
       "version": "0.2.1",
-      "from": "voxel-blockdata@",
+      "from": "voxel-blockdata@*",
       "resolved": "https://registry.npmjs.org/voxel-blockdata/-/voxel-blockdata-0.2.1.tgz"
     },
     "voxel-crunch": {
@@ -2765,7 +2770,7 @@
     },
     "voxel-plugins": {
       "version": "0.3.2",
-      "from": "voxel-plugins@",
+      "from": "voxel-plugins@*",
       "resolved": "https://registry.npmjs.org/voxel-plugins/-/voxel-plugins-0.3.2.tgz",
       "dependencies": {
         "inherits": {

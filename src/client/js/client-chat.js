@@ -10,7 +10,11 @@ module.exports = function(name, emitter) {
     }
 
     if (document.activeElement === el) {
-      emitter.emit('message', {user: name, text: el.value})
+      emitter.emit('message', {
+        user: name,
+        text: el.value,
+        timestamp: new Date().toJSON()
+      });
       el.value = '';
       el.blur();
     } else {
