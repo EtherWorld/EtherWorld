@@ -2,7 +2,6 @@ var fs = require('fs');
 var path = require('path');
 
 var Lobby = require('./../shared/lobby');
-var storage = require('./../shared/storage');
 var utils = require('./../shared/utils');
 
 // Socket.io mapping.

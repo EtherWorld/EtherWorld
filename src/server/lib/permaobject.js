@@ -13,31 +13,36 @@ whenever a property gets changed. Uses `Object.observe` under the hood.
 
     var ps = new PermaObject('voxel-server');
 
-    ps.swag = 'yolo';
-    ps.icy = 'burr';
+    ps.load().then(function () {
+      ps.swag = 'yolo';
+      ps.icy = 'burr';
+    });
 
 #### Observable array
 
     var ps = new PermaObject('voxel-server', []);
 
-    ps.push('yolo');
-    ps.push('swag');
+    ps.load().then(function () {
+      ps.push('yolo');
+      ps.push('swag');
+    });
 
 ### Purging
 
-   ps.unobserve();
+    ps.unobserve();
 
 ### Stopping observations
 
-   ps.unobserve();
+    ps.unobserve();
 
 */
 
 var extend = require('extend');
 
-var storage = require('../../shared/storage');
+var db = require('./db');
 
-require('object.observe');  // Polyfill for `Object.observe`.
+
+require('object.observe');  // Polyfill `Object.observe`.
 
 
 function clone(obj) {
@@ -83,19 +88,25 @@ function PermaObject(namespace, originalObject) {
   this._originalObject = originalObject || {};
   this._onchange = this._onchange.bind(this);
 
-  this._refresh();
+  this._loaded = this._refresh();
 }
 
 
 PermaObject.prototype.push = function (item) {
   // This is like `this.array.push(item)` but will actually get observed.
-  this.array = (this.array || []).concat([item]);
-  return item;
+  var self = this;
+  return self._loaded.then(function () {
+    self.array = (self.array || []).concat([item]);
+    return item;
+  });
 };
 
 PermaObject.prototype.forEach = function (func, context) {
   // This is a wrapper for `this.array.forEach`.
-  return (this.array || []).forEach(func, context);
+  var self = this;
+  return self._loaded.then(function () {
+    return (self.array || []).forEach(func, context);
+  });
 };
 
 PermaObject.prototype.set = function (obj) {
@@ -129,20 +140,46 @@ PermaObject.prototype._onchange = function (changes) {
   this._save();
 };
 
-PermaObject.prototype._refresh = function () {
-  var obj = storage.get(this._namespace) || this._originalObject;
-  this._debug('refresh %j', this);
-  this.set(obj);
+PermaObject.prototype.load = PermaObject.prototype._refresh = function () {
+  var self = this;
+
+  self._debug('refresh %j', self);
+
+  return db.redis.get(self._namespace).then(function (reply) {
+    self._debug('redis get %s', self._namespace);
+
+    try {
+      reply = JSON.parse(reply);
+    } catch (e) {
+      console.warn('Could not parse Redis reply as JSON: %s', reply);
+    }
+
+    var obj = reply || self._originalObject;
+    self.set(obj);
+
+    return obj;
+  });
 };
 
 PermaObject.prototype.purge = function () {
-  this._debug('purge %j', this);
-  storage.remove(this._namespace);
+  var self = this;
+
+  self._debug('purge %j', self);
+  return db.redis.remove(self._namespace).then(function (reply) {
+    self._debug('redis remove %s', self._namespace);
+  });
 };
 
 PermaObject.prototype._save = function () {
-  this._debug('save %j', this);
-  storage.set(this._namespace, this.toJSON());
+  var self = this;
+
+  self._debug('save %j', self);
+
+  var data = JSON.stringify(self.toJSON());
+
+  return db.redis.set(self._namespace, data).then(function (reply) {
+    self._debug('redis set %s %j', self._namespace, data);
+  });
 };
 
 PermaObject.prototype.unobserve = function () {
