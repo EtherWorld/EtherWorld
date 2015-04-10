@@ -70,6 +70,9 @@ module.exports = function(opts) {
     Object.keys(clients).map(function(client) {
       if (client === id) return
       if (client in clients) {
+        if (id && clients[id] && clients[id].room !== clients[client].room) {
+          return;
+        }
         clients[client].emit(cmd, arg1, arg2, arg3);
       }
     });
@@ -83,28 +86,45 @@ module.exports = function(opts) {
     }
   }
 
+  function sendToRoom(room, cmd, data) {
+    Object.keys(clients).map(function(client) {
+      if (client in clients) {
+        if (clients[client].room !== room) {
+          return;
+        }
+        clients[client].emit(cmd, data);
+      }
+    });
+  }
 
-  var update = {
-    positions: {},
-    date: +new Date()
-  };
+  var updatesByRoom = {};
 
   function sendUpdate() {
     var clientKeys = Object.keys(clients)
     if (clientKeys.length === 0) return
-    update.positions = {};
-    update.date = +new Date();
+    updatesByRoom = {};
+
     clientKeys.map(function(key) {
       var emitter = clients[key]
-      update.positions[key] = {
+      var room = emitter.room;
+
+      updatesByRoom[room] = updatesByRoom[room] || {
+        positions: {},
+        date: +new Date()
+      };
+
+      updatesByRoom[room].positions[key] = {
         position: emitter.player.position,
         rotation: {
           x: emitter.player.rotation.x,
           y: emitter.player.rotation.y
         }
-      }
+      };
     });
-    broadcast(null, 'update', update);
+
+    for (var i in updatesByRoom) {
+      sendToRoom(i, 'update', updatesByRoom[i]);
+    }
   }
 
   setInterval(sendUpdate, 1000 / 22) // 45ms
@@ -179,7 +199,7 @@ module.exports = function(opts) {
       message.text = (message.text || '').substr(0, 140);
       if (message.text.length === 0) return;
       console.log('[%j] chat: %s', message.timestamp, message);
-      broadcast(null, 'message', message, null, null, emitter);
+      broadcast(id, 'message', message, null, null, emitter);
     });
 
     // give the user the initial game settings
@@ -216,7 +236,7 @@ module.exports = function(opts) {
       var chunkID = chunkPos.join('|');
       if (chunkCache[chunkID]) delete chunkCache[chunkID];
       if (data) blockdata.set(pos[0], pos[1], pos[2], data);
-      broadcast(null, 'set', pos, val, data, emitter);
+      broadcast(id, 'set', pos, val, data, emitter);
     });
   });
 
