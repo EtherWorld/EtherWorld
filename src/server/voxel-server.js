@@ -9,6 +9,7 @@ var crunch = require('voxel-crunch')
 var engine = require('voxel-engine')
 var voxel = require('voxel')
 var createPlugins = require('voxel-plugins');
+var VoiceChatServer = require('./voice-chat-server');
 
 var PermaObject = require('./lib/permaobject');
 
@@ -64,6 +65,7 @@ module.exports = function(opts) {
   var chunkCache = {};
   var usingClientSettings = false;
 
+  var voiceChat = VoiceChatServer(clients);
 
   /**
    * Simple version of socket.io's sockets.emit.
@@ -194,6 +196,8 @@ module.exports = function(opts) {
       position: new game.THREE.Vector3()
     }
 
+    voiceChat.addClient(id);
+
     console.log(id, 'joined')
     emitter.emit('id', id)
     broadcast(id, 'join', id)
@@ -201,6 +205,7 @@ module.exports = function(opts) {
     stream.once('error', leave)
 
     function leave() {
+      voiceChat.removeClient(id);
       delete clients[id]
       console.log(id, 'left')
       broadcast(id, 'leave', id)
