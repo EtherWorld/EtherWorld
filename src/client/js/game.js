@@ -145,7 +145,6 @@ module.exports = function (opts, setup) {
   }
 };
 
-
 function defaultSetup(game, avatar, client) {
   // highlight blocks when you look at them, hold <Ctrl> for block placement
   var blockPosPlace, blockPosErase
@@ -158,7 +157,7 @@ function defaultSetup(game, avatar, client) {
   hl.on('highlight', function (voxelPos) { blockPosErase = voxelPos })
   hl.on('remove', function () { blockPosErase = null })
   hl.on('highlight-adjacent', function (voxelPos) { blockPosPlace = voxelPos })
-  hl.on('remove-adjacent', function () { blockPosPlace = null })
+  hl.on('remove-adjacent', function() { blockPosPlace = null })
 
   // toggle between first and third person modes
   window.addEventListener('keydown', function (ev) {
@@ -172,27 +171,42 @@ function defaultSetup(game, avatar, client) {
   var initialActiveSlot = $(`#toolbar [data-slot="3"]`);
   initialActiveSlot.classList.add('active');
 
+  // handle user avatar collisions into items
+  game.on('collision', utils.debounce(function(item) {
+    var position = item.yaw.position;
+    var bd = client.blockdata.get(position.x, position.y, position.z);
+    if (bd) {
+      window.location.href = utils.addhttp(bd.link);
+      return;
+    }
+  }, 250));
+
   game.on('fire', function() {
     var position = blockPosPlace
     if (position) {
-      game.createBlock(position, currentMaterial)
-
       var data;
+      var bd = client.blockdata.get(position[0], position[1], position[2]);
       var LINK_BLOCK_ID = 8;
       if (currentMaterial === LINK_BLOCK_ID) {
-        data = { link: prompt('Enter a URL:') };
-      }
-      client.emitter.emit('set', position, currentMaterial, data)
-    }
-    else {
-      position = blockPosErase
-      if (position) {
-        var bd = client.blockdata.get(position[0], position[1], position[2]);
         if (bd) {
-          window.open(bd.link, '_blank');
+          game.scene.remove(bd.mesh);
+          client.blockdata.clear(position[0], position[1], position[2]); 
           return;
         }
-        client.emitter.emit('set', position, 0)
+        data = { link: prompt('Enter a URL:') };
+        client.emitter.emit('set', position, currentMaterial, data);
+      } else {
+        if (bd) {
+          window.location.href = utils.addhttp(bd.link);
+          return;
+        }
+        game.createBlock(position, currentMaterial);
+        client.emitter.emit('set', position, currentMaterial);
+      }
+    } else {
+      position = blockPosErase;
+      if (position) {
+        client.emitter.emit('set', position, 0);
       }
     }
   })
