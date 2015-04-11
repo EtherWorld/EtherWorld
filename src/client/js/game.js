@@ -11,6 +11,7 @@ var voxel = require('voxel');
 var walk = require('voxel-walk');
 var createClient = require('./voxel-client');
 var utils = require('../../shared/utils');
+var gamepad = require('./gamepad');
 var game;
 
 var $ = utils.$;
@@ -127,6 +128,8 @@ module.exports = function (opts, setup) {
       var container = opts.containerSelector ? $(opts.containerSelector) : (opts.container || document.body);
 
       game = client.game;
+
+      gamepad(game);
 
       game.appendTo(container);
 
