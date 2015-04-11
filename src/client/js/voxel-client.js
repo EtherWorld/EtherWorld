@@ -95,7 +95,7 @@ Client.prototype.createGame = function(settings, game) {
   self.game = engine(settings);
   self.game.settings = settings;
 
-  var playerFly = false;
+  self.game.playerFly = false;
 
   function sendState() {
     if (!self.connected) return;
@@ -116,14 +116,14 @@ Client.prototype.createGame = function(settings, game) {
     // Initialize fly if we haven't done so yet.
     // It would be better to just check for this a single time, but
     // it seems the player object is not ready if we do this earlier.
-    if (!playerFly && self.connected) {
+    if (!self.game.playerFly && self.connected) {
       var makeFly = fly(self.game);
-      playerFly = makeFly(self.game.controls.target());
+      self.game.playerFly = makeFly(self.game.controls.target());
     }
 
     var interacting = false
     Object.keys(state).map(function(control) {
-      if (state[control] > 0) interacting = true;
+      if (state[control] != 0) interacting = true;
     });
     if (interacting) sendState();
   });
