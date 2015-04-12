@@ -96,21 +96,22 @@ Client.prototype.createLink = function(pos, data) {
   var self = this;
   // link mesh
   var mesh = new self.game.THREE.Mesh(
-    new self.game.THREE.SphereGeometry(0.3, 10, 6),
-    new self.game.THREE.MeshBasicMaterial({ color: 0x0000ff })
+    new self.game.THREE.SphereGeometry(0.5, 10, 6),
+    new self.game.THREE.MeshNormalMaterial()
   );
+
   mesh.geometry.applyMatrix(new self.game.THREE.Matrix4().makeTranslation(0.5, 0.5, 0.5));
   mesh.geometry.verticesNeedUpdate = true;
   mesh.position.set(pos[0], pos[1], pos[2]);
-  
+
   data = extend({ mesh: mesh }, data);
-  
+
   self.blockdata.set(pos[0], pos[1], pos[2], data);
-  
+
   self.game.addItem({
     mesh: mesh,
     size: 1
-  }); 
+  });
 }
 
 Client.prototype.createGame = function(settings, game) {
