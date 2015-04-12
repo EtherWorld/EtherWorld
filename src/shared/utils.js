@@ -23,7 +23,7 @@ exports.getCurrentPath = function (win) {
   return (win.location.pathname || '') + (win.location.search || '');
 };
 
-exports.addhttp = function(url) {
+exports.formatUrl = function(url) {
   return (url.indexOf('://') == -1) ? 'http://' + url : url;
 };
 

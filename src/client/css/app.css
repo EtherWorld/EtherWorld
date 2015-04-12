@@ -59,6 +59,7 @@ body {
   font-family: Pitch, monospace;
   font-size: 1.5rem;
   overflow: hidden;
+  transition: opacity 0.2s linear;
 }
 
 .page {
@@ -126,6 +127,10 @@ h2 {
   position: fixed;
   top: 50%;
   width: 32px;
+}
+
+body.fade {
+  opacity: 0;
 }
 
 /* Toolbar */

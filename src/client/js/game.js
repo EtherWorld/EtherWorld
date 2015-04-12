@@ -179,7 +179,10 @@ function defaultSetup(game, avatar, client) {
     var position = item.yaw.position;
     var bd = client.blockdata.get(position.x, position.y, position.z);
     if (bd) {
-      window.location.href = utils.addhttp(bd.link);
+      document.body.classList.add('fade');
+      setTimeout(() => {
+        window.location.href = utils.formatUrl(bd.link);
+      }, 200);
       return;
     }
   }, 250));
@@ -193,16 +196,12 @@ function defaultSetup(game, avatar, client) {
       if (currentMaterial === LINK_BLOCK_ID) {
         if (bd) {
           game.scene.remove(bd.mesh);
-          client.blockdata.clear(position[0], position[1], position[2]); 
+          client.blockdata.clear(position[0], position[1], position[2]);
           return;
         }
         data = { link: prompt('Enter a URL:') };
         client.emitter.emit('set', position, currentMaterial, data);
       } else {
-        if (bd) {
-          window.location.href = utils.addhttp(bd.link);
-          return;
-        }
         game.createBlock(position, currentMaterial);
         client.emitter.emit('set', position, currentMaterial);
       }
