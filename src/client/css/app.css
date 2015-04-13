@@ -169,6 +169,16 @@ body.fade {
   background: url(/img/portal.png) no-repeat center / auto 100%;
 }
 
+/* Forms */
+.dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fff;
+  border: 1px solid #000;
+  padding: 1rem;
+}
+
 /* Voxel plugin hooks */
 #stats {
   bottom: 0;
