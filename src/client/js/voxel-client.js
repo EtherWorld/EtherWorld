@@ -9,6 +9,7 @@ var highlight = require('voxel-highlight');
 var skin = require('minecraft-skin');
 var player = require('voxel-player');
 var createPlugins = require('voxel-plugins');
+var voiceChat = require('./voice-chat');
 
 // voxel-plugins
 require('voxel-blockdata');
@@ -49,6 +50,8 @@ Client.prototype.bindEvents = function(socket, game) {
   this.emitter = duplexEmitter(socket);
   var emitter = this.emitter;
   this.connected = true;
+
+  voiceChat(emitter);
 
   emitter.on('id', function(id) {
     console.log('got id', id);
