@@ -1,4 +1,3 @@
-
 module.exports = function (game) {
 
   var controls = game.controls;
@@ -33,12 +32,14 @@ module.exports = function (game) {
 
     for (var pad = 0; pad < gamepads.length; pad++) {
 
-      if (!axes) {
-        axes = [];
-      }
-
       var gp = gamepads[pad];
+
       if (gp) {
+
+        if (!axes) {
+          axes = [];
+        }
+
         var str = "a:"
         for (var which = 0; which < gp.axes.length; which++) {
           var value = clamp(gp.axes[which]);
