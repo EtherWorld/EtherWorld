@@ -12,6 +12,7 @@ var walk = require('voxel-walk');
 var createClient = require('./voxel-client');
 var utils = require('../../shared/utils');
 var gamepad = require('./gamepad');
+var template = require('./template');
 var game;
 
 var $ = utils.$;
@@ -26,32 +27,6 @@ module.exports = function(opts, setup) {
 
   var renderTemplate = function(route) {
     main.innerHTML = $('template[data-route="' + route + '"]').innerHTML;
-  };
-
-  var _addTemplate = function(route, insertBefore) {
-    var template = $('template[data-route="' + route + '"]');
-
-    // Make a copy of the document fragment so the original template doesn't
-    // get destroyed in the DOM.
-    var clone = document.importNode(template.content, true);
-
-    if (insertBefore) {
-      main.insertBefore(clone, main.firstChild);
-    } else {
-      main.appendChild(clone);
-    }
-  };
-
-  var removeTemplate = function(route) {
-
-  }
-
-  var appendTemplate = function(route, insertBefore) {
-    _addTemplate(route, false);
-  };
-
-  var prependTemplate = function(route, insertBefore) {
-    _addTemplate(route, true);
   };
 
   var isValidNavigationLink = function(el) {
@@ -87,7 +62,7 @@ module.exports = function(opts, setup) {
     var roomName = 'splash';
     console.log('[%s] room: %s', this.state.route, roomName);
 
-    prependTemplate('/');
+    template.prependTemplate('/');
   });
 
   router.get('/room/:room?', function(req) {
@@ -156,7 +131,7 @@ module.exports = function(opts, setup) {
       var form = $('#url-input-form');
       console.log('Got form', form)
       if (!form) {
-        appendTemplate('/url_prompt');
+        template.appendTemplate('/url_prompt');
         form = $('#url-input-form');
       }
 
