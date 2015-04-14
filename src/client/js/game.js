@@ -126,6 +126,17 @@ module.exports = function(opts, setup) {
     });
   }
 
+  var main = $('#main');
+
+  var hidePrompt = function(form) {
+    form.parentNode.removeChild(form);
+
+    main.requestPointerLock = main.requestPointerLock ||
+                              main.mozRequestPointerLock ||
+                              main.webkitRequestPointerLock;
+    main.requestPointerLock();
+  };
+
   var promptUrl = function() {
     return new Promise(resolve => {
       var form = $('#url-input-form');
@@ -135,9 +146,9 @@ module.exports = function(opts, setup) {
         form = $('#url-input-form');
       }
 
-      document.exitPointerLock = document.exitPointerLock    ||
-                           document.mozExitPointerLock ||
-                           document.webkitExitPointerLock;
+      document.exitPointerLock = document.exitPointerLock ||
+                                 document.mozExitPointerLock ||
+                                 document.webkitExitPointerLock;
       document.exitPointerLock();
 
       var input = $('#url-input');
@@ -146,14 +157,7 @@ module.exports = function(opts, setup) {
       form.addEventListener('submit', e => {
         e.preventDefault();
         var value = input.value;
-        form.parentNode.removeChild(form);
-
-        var main = $('#main');
-        main.requestPointerLock = main.requestPointerLock ||
-          main.mozRequestPointerLock ||
-          main.webkitRequestPointerLock;
-        main.requestPointerLock();
-
+        hidePrompt(form);
         resolve(value);
       });
     });
@@ -222,6 +226,7 @@ module.exports = function(opts, setup) {
             data = {
               link: url
             };
+
             client.emitter.emit('set', position, currentMaterial, data);
           });
         } else {
@@ -257,6 +262,13 @@ module.exports = function(opts, setup) {
         }
 
         currentMaterial = parseInt(key, 10) - 1;
+      }
+
+      if (e.which === 27 || e.key === 'Escape') {
+        var form = $('#url-input-form');
+        if (form) {
+          hidePrompt(form);
+        }
       }
     });
   }
