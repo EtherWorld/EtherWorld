@@ -10,9 +10,11 @@ var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
 var createClient = require('./voxel-client');
+var oculus = require('voxel-oculus');
 var utils = require('../../shared/utils');
 var gamepad = require('./gamepad');
 var template = require('./template');
+var vrcontrols = require('./vrcontrols');
 var game;
 
 var $ = utils.$;
@@ -247,8 +249,15 @@ module.exports = function(opts, setup) {
       toolbarSlot.style.backgroundColor = primitive;
     });
 
+
+    // VR
+    vrcontrols(game);
+
+    var effect = new oculus(game, {distortion: 0, separation: 0.01});
+
     window.addEventListener('keydown', e => {
       var key = String.fromCharCode(e.which);
+
       if (key.match(/[0-9]{1}/)) {
         console.log('change active item', key);
         var oldActiveItem = $('#toolbar .active[data-slot]');
@@ -262,6 +271,10 @@ module.exports = function(opts, setup) {
         }
 
         currentMaterial = parseInt(key, 10) - 1;
+      }
+
+      if (key === 'V') {
+        effect.toggle();
       }
 
       if (e.which === 27 || e.key === 'Escape') {
