@@ -4,6 +4,7 @@ module.exports = function (game) {
   var oriStream = controls.createWriteRotationStream();
   var androidOffsetHack = 0;
   var oldButtons = [];
+  var oldAxes = [];
 
   function clamp(value) {
     var result = value;
@@ -25,46 +26,34 @@ module.exports = function (game) {
 
   function tick(delta) {
     // use mapped gamepad code here.
-    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
 
     var axes;
     var buttons = [];
+    var gp;
+    var pad = 0;
 
-    for (var pad = 0; pad < gamepads.length; pad++) {
-
-      var gp = gamepads[pad];
-
-      if (gp) {
-
-        if (!axes) {
-          axes = [];
-        }
-
-        var str = "a:"
-        for (var which = 0; which < gp.axes.length; which++) {
-          var value = clamp(gp.axes[which]);
-          str = str + ' ' + which + ':' + (value != 0 ? '1' : '0');
-          if (which >= axes.length) {
-             axes[which] = value;
-          }
-          else if (((axes[which] >= 0) && (value > axes[which])) ||
-              ((axes[which] <= 0) && (value < axes[which]))) {
-            axes[which] = value;
-          }
-        }
-        str = str + " b:"
-        for (var which = 0; which < gp.buttons.length; which++) {
-          buttons[which] = gp.buttons[which].value;
-          str = str + ' ' + which + ':' + gp.buttons[which].value;
-        }
-        //console.log(str);
-      }
+    while (!gp && (pad < gamepads.length)) {
+      gp = gamepads[pad];
+      pad++;
     }
 
-    if (axes) {
+    if (gp) {
 
-      if (axes[0] != 0) {
+      if (gp.axes[0] != 0) {
         androidOffsetHack = 1;
+      }
+
+      var index = 0;
+
+      var axes = gp.axes.slice();
+
+      for (index = 0; index < axes.length; index++) {
+        axes[index] = clamp(axes[index]);
+      }
+
+      for (index = 0; index < gp.buttons.length; index++) {
+        buttons[index] = gp.buttons[index].pressed;
       }
 
       var zAxis = 2 - androidOffsetHack;
@@ -82,7 +71,7 @@ module.exports = function (game) {
         controls.state.backward = target.backward = true;
         controls.state.forward = target.forward = false;
       }
-      else {
+      else if (axes[zAxis] != oldAxes[zAxis]) {
         controls.state.backward = target.backward = false;
         controls.state.forward = target.forward = false;
       }
@@ -97,7 +86,7 @@ module.exports = function (game) {
         controls.state.left = target.left = false;
         controls.state.right = target.right = true;
       }
-      else {
+      else if (axes[xAxis] != oldAxes[xAxis]) {
         controls.state.left = target.left = false;
         controls.state.right = target.right = false;
       }
@@ -109,16 +98,16 @@ module.exports = function (game) {
 
       oriStream.write({dy:pitch, dx:yaw, dz:0});
 
-      var fire = 0,
-        fly = 3,
-        jump = 4,
-        crouch = 5;
+      var gpmap = GamepadMap[gp.id]
+      if (!gpmap) {
+        gpmap = GamepadMap['default'];
+      }
 
-      if (buttons[fire] && (buttons[fire] != oldButtons[fire])) {
+      if (buttons[gpmap.fire] && (buttons[gpmap.fire] != oldButtons[gpmap.fire])) {
         game.onFire();
       }
 
-      if (buttons[fly] && (buttons[fly] != oldButtons[fly])) {
+      if (buttons[gpmap.fly] && (buttons[gpmap.fly] != oldButtons[gpmap.fly])) {
         if (game.playerFly.flying) {
           game.playerFly.stopFlying();
         } else {
@@ -126,17 +115,52 @@ module.exports = function (game) {
         }
       }
 
-      if ((buttons[jump] != oldButtons[jump])) {
-        controls.state['jump'] = buttons[jump];
+      if ((buttons[gpmap.jump] != oldButtons[gpmap.jump])) {
+        controls.state['jump'] = buttons[gpmap.jump];
       }
 
-      if ((buttons[crouch] != oldButtons[crouch])) {
-        controls.state['crouch'] = buttons[crouch];
+      if ((buttons[gpmap.crouch] != oldButtons[gpmap.crouch])) {
+        controls.state['crouch'] = buttons[gpmap.crouch];
       }
 
+      oldAxes = axes;
       oldButtons = buttons;
     }
   };
 
   game.on('tick', tick);
 };
+
+var GamepadMap = {
+  '54c-268-PLAYSTATION(R)3 Controller': {
+    fire: 13,
+    fly: 11,
+    jump: 14,
+    crouch: 9,
+  },
+  '46d-c216-Logitech Dual Action': {
+    fire: 0,
+    fly: 3,
+    jump: 4,
+    crouch: 5,
+  },
+  'b05-4500-ASUS Gamepad': {
+    fire: 4,
+    fly: 5,
+    jump: 6,
+    crouch: 7,
+  },
+  'android': {
+    fire: 2,
+    fly: 3,
+    jump: 4,
+    crouch: 5,
+  },
+  'default': {
+    fire: 2,
+    fly: 3,
+    jump: 4,
+    crouch: 5,
+  }
+};
+
