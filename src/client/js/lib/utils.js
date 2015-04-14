@@ -1,4 +1,7 @@
-var reRoomUrl = exports.reRoomUrl = /^[~a-z0-9_-]+$/i;
+var internals = {
+  reFieldTags: /input|keygen|meter|option|output|progress|select|textarea/i
+  reRoomUrl: /^[~a-z0-9_-]+$/i
+};
 
 
 exports.reStringRoomUrl = '([~\.a-z0-9_-]+)';
@@ -14,6 +17,11 @@ exports.$$ = function (sel) {
 };
 
 
+exports.fieldFocused = function (e) {
+  return internals.reFieldTags.test(e.target.nodeName);
+};
+
+
 exports.getCurrentPath = function (win) {
   win = win || window;
   return (win.location.pathname || '') + (win.location.search || '');
@@ -21,7 +29,7 @@ exports.getCurrentPath = function (win) {
 
 
 var isRoom = exports.isRoom = function (str) {
-  return reRoomUrl.test(str);
+  return internals.reRoomUrl.test(str);
 };
 
 
