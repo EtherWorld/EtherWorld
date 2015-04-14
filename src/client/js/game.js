@@ -9,12 +9,16 @@ var highlight = require('voxel-highlight');
 var player = require('voxel-player');
 var voxel = require('voxel');
 var walk = require('voxel-walk');
+
+var gameUtils = require('../../shared/game-utils');
+
 var createClient = require('./voxel-client');
-var oculus = require('voxel-oculus');
-var utils = require('../../shared/utils');
 var gamepad = require('./gamepad');
+var oculus = require('voxel-oculus');
 var template = require('./template');
+var utils = require('./lib/utils');
 var vrcontrols = require('./vrcontrols');
+
 var game;
 
 var $ = utils.$;
@@ -73,7 +77,7 @@ module.exports = function(opts, setup) {
     var roomName = req.params.room;
 
     if (!roomName) {
-      window.history.replaceState({}, null, '/room/' + utils.randomString());
+      window.history.replaceState({}, null, '/room/' + gameUtils.randomString());
       router.trigger('navigate').trigger('divert');
       return;
     }

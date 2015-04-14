@@ -1,8 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 
+var gameUtils = require('./../shared/game-utils');
+
 var Lobby = require('./../shared/lobby');
-var utils = require('./../shared/utils');
 
 // Socket.io mapping.
 var sockets = {};
@@ -62,7 +63,7 @@ app.get('/room/:room?', function (req, res, next) {
   var roomName = req.params.room;
 
   if (!roomName) {
-    res.redirect('/room/' + utils.randomString());
+    res.redirect('/room/' + gameUtils.randomString());
     return;
   }
 
