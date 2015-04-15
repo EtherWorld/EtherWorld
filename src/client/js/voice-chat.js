@@ -29,7 +29,7 @@ var emitter;
 var pc = {};
 var source = {};
 var stream;
-var config = {}; // 'iceServers':[{'url':'stun:stun.services.mozilla.com'}]};
+var config = {'iceServers':[{'url':'stun:stun.services.mozilla.com'}]};
 var audioContext = new window.AudioContext();
 
 function addIceCandidate(id, ev) {
