@@ -19,9 +19,12 @@ var template = require('./template');
 var utils = require('./lib/utils');
 var vrcontrols = require('./vrcontrols');
 
+var client;
 var game;
 
 var $ = utils.$;
+
+const REDIRECT_TO_EXTERNAL_LINKS = true;  // Set to `false` to use iframes.
 
 
 module.exports = function(opts, setup) {
@@ -30,11 +33,12 @@ module.exports = function(opts, setup) {
   var router = new Grapnel({
     pushState: true
   });
-  var main = $('#main');
-
-  var renderTemplate = function(route) {
-    main.innerHTML = $('template[data-route="' + route + '"]').innerHTML;
+  router.divert = function (uri) {
+    window.history.replaceState({}, null, uri);
+    router.trigger('navigate').trigger('divert');
   };
+
+  var main = $('#main');
 
   var isValidNavigationLink = function(el) {
     var href = el.href || el.action;
@@ -63,13 +67,22 @@ module.exports = function(opts, setup) {
     router.navigate(e.target.href);
   }, true);
 
+  router.get('/*', function () {
+    // If the user is navigating away from the iframe view,
+    // make sure we then hide the iframe.
+    if (this.fragment.get().indexOf('/link/') !== 0) {
+      var iframe = $('#link__iframe.visible');
+      if (iframe) {
+        iframe.classList.remove('visible');
+        iframe.classList.add('hidden');
+      }
+    }
+  });
+
   router.get('/', function(req) {
     console.log('[%s] Navigated to view', utils.getCurrentPath());
 
-    var roomName = 'splash';
-    console.log('[%s] room: %s', this.state.route, roomName);
-
-    template.prependTemplate('/');
+    template.prepend('/');
   });
 
   router.get('/room/:room?', function(req) {
@@ -78,14 +91,11 @@ module.exports = function(opts, setup) {
     var roomName = req.params.room;
 
     if (!roomName) {
-      window.history.replaceState({}, null, '/room/' + gameUtils.randomString());
-      router.trigger('navigate').trigger('divert');
+      router.divert('/room/' + gameUtils.randomString());
       return;
     }
 
     console.log('[%s] room: %s', utils.getCurrentPath(), roomName);
-
-    renderTemplate(this.state.route);
 
     var username = storage.get('username');
     if (!username) {
@@ -95,7 +105,47 @@ module.exports = function(opts, setup) {
 
     console.log('[%s] username: %s', utils.getCurrentPath(), username);
 
-    startGame(roomName);
+    if (game && game.attached && main.getAttribute('data-route') === this.state.route) {
+      client.emitter.emit('created', roomName);
+    } else {
+      template.render(this.state.route);
+      startGame(roomName);
+    }
+  });
+
+  router.get('/link/:link', function(req) {
+    var path = utils.getCurrentPath();
+    console.log('[%s] Navigated to view', path);
+
+    var linkUrl = req.params.link;
+
+    console.log('[%s] link: %s', path, linkUrl);
+
+    if (utils.isRoom(linkUrl)) {
+      router.divert('/room/' + linkUrl);
+    } else {
+      var roomMatches = linkUrl.match(
+        window.location.origin + '/room/' + utils.reStringRoomUrl, 'i'
+      );
+      if (roomMatches && utils.isRoom(roomMatches[1])) {
+        router.divert('/room/' + roomMatches[1]);
+      } else if (REDIRECT_TO_EXTERNAL_LINKS) {
+        window.location.href = linkUrl;
+      } else {
+        var iframe = $('#link__iframe');
+        if (!iframe) {
+          template.append(this.state.route);
+          iframe = $('#link__iframe');
+        }
+        iframe.classList.remove('hidden');
+        iframe.classList.add('visible');
+        iframe.src = linkUrl;
+        iframe.onload = function () {
+          document.body.classList.remove('fade');
+          utils.exitPointerLock(document);
+        };
+      }
+    }
   });
 
   function startGame(roomName) {
@@ -103,21 +153,36 @@ module.exports = function(opts, setup) {
     setup = setup || defaultSetup;
     opts = extend({}, opts || {});
 
-    var client = createClient({
+    client = createClient({
       server: opts.server,
       room: roomName
     });
 
     client.emitter.on('noMoreChunks', function() {
+      if (game && game.attached) {
+        game.items.forEach(item => {
+          if (item.mesh) {
+            game.removeItem(item);
+          }
+          if (item.position) {
+            client.blockdata.clear(item.position.x, item.position.y, item.position.z);
+          }
+        });
+        document.body.classList.remove('fade');
+        console.log('Clearing room since game is already attached');
+        return;
+      }
+
       console.log("Attaching to the container and creating player")
 
       var container = opts.containerSelector ? $(opts.containerSelector) : (opts.container || document.body);
 
       game = client.game;
 
-      gamepad(game);
-
       game.appendTo(container);
+      game.attached = true;
+
+      gamepad(game);
 
       if (game.notCapable()) return game
 
@@ -135,11 +200,7 @@ module.exports = function(opts, setup) {
 
   var hidePrompt = function(form) {
     form.parentNode.removeChild(form);
-
-    main.requestPointerLock = main.requestPointerLock ||
-                              main.mozRequestPointerLock ||
-                              main.webkitRequestPointerLock;
-    main.requestPointerLock();
+    utils.requestPointerLock(main);
   };
 
   var promptUrl = function() {
@@ -147,14 +208,11 @@ module.exports = function(opts, setup) {
       var form = $('#url-input-form');
       console.log('Got form', form)
       if (!form) {
-        template.appendTemplate('/url_prompt');
+        template.append('/url_prompt');
         form = $('#url-input-form');
       }
 
-      document.exitPointerLock = document.exitPointerLock ||
-                                 document.mozExitPointerLock ||
-                                 document.webkitExitPointerLock;
-      document.exitPointerLock();
+      utils.exitPointerLock(document);
 
       var input = $('#url-input');
       input.focus();
@@ -208,10 +266,12 @@ module.exports = function(opts, setup) {
       var bd = client.blockdata.get(position.x, position.y, position.z);
       if (bd) {
         document.body.classList.add('fade');
-        setTimeout(() => {
-          window.location.href = utils.formatUrl(bd.link);
-        }, 200);
-        return;
+        var link = utils.formatLinkUrl(bd.link);
+        if (REDIRECT_TO_EXTERNAL_LINKS) {
+          window.location.href = link;
+        } else {
+          router.navigate('/link/' + encodeURIComponent(link));
+        }
       }
     }, 250));
 
@@ -318,7 +378,7 @@ module.exports = function(opts, setup) {
           controls.resetSensor();
           break;
       }
-      
+
     });
   }
 

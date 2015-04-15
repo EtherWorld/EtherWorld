@@ -46,6 +46,10 @@
   padding: 0;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .full--v {
   height: 100%;
 }
@@ -133,6 +137,16 @@ body.fade {
   opacity: 0;
 }
 
+.link__iframe {
+  background: #fff;
+  border: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+
 /* Toolbar */
 #toolbar {
   width: 70%;
@@ -195,4 +209,3 @@ body.fade {
   text-align: center;
   width: 200px;
 }
-

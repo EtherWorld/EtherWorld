@@ -23,7 +23,7 @@
     </template>
     <template class="template" data-route="/url_prompt">
       <form id="url-input-form" class="dialog" action="#">
-        <label for="url-input">Enter a URL:</label>
+        <label for="url-input">Enter a room name or URL:</label>
         <input id="url-input"></input>
         <input type="submit" value="Create">
       </form>
@@ -42,6 +42,9 @@
         <div data-slot="8"></div>
         <div data-slot="9" data-element="link"></div>
       </div>
+    </template>
+    <template class="template" data-route="/link/:link">
+      <iframe id="link__iframe" class="link__iframe" seamless></iframe>
     </template>
   </body>
 </html>
