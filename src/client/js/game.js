@@ -132,8 +132,6 @@ module.exports = function(opts, setup) {
     });
   }
 
-  var main = $('#main');
-
   var hidePrompt = function(form) {
     form.parentNode.removeChild(form);
 
