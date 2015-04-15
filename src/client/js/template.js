@@ -1,4 +1,4 @@
-var utils = require('../../shared/utils');
+var utils = require('./lib/utils');
 var $ = utils.$;
 
 var _addTemplate = function(route, insertBefore) {
