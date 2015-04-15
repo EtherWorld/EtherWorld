@@ -18,6 +18,15 @@ exports.formatUrl = function(url) {
   return (url.indexOf('://') == -1) ? 'http://' + url : url;
 };
 
+exports.launchFs = function(element, opts) {
+  if(element.requestFullscreen) {
+    element.requestFullscreen(opts);
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen(opts);
+  } else if(element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen(opts);
+  }
+};
 
 exports.debounce = function(func, wait, immediate) {
   var timeout;

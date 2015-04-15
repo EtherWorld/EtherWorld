@@ -26,6 +26,7 @@ var $ = utils.$;
 
 module.exports = function(opts, setup) {
   var GET = qs.parse(window.location.search);
+
   var router = new Grapnel({
     pushState: true
   });
@@ -253,9 +254,35 @@ module.exports = function(opts, setup) {
 
 
     // VR
-    vrcontrols(game);
-
+    var controls = vrcontrols(game);
     var effect = new oculus(game, {distortion: 0, separation: 0.01});
+    var vrHMD;
+
+    var gotVRDevices = function(devices) {
+      for (var i = 0; i < devices.length; i ++) {
+        if (devices[i] instanceof HMDVRDevice) {
+          vrHMD = devices[i];
+          break;
+        }
+      }
+    };
+
+    var handleFsChange = function(e) {
+      var fullscreenElement = document.fullscreenElement ||
+        document.mozFullScreenElement ||
+        document.webkitFullscreenElement;
+
+      if (fullscreenElement == null) {
+        effect.disable();
+      }
+    };
+
+    if (navigator.getVRDevices) {
+      navigator.getVRDevices().then(gotVRDevices);
+    }
+
+    document.addEventListener('mozfullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
 
     window.addEventListener('keydown', e => {
       var key = String.fromCharCode(e.which);
@@ -275,16 +302,23 @@ module.exports = function(opts, setup) {
         currentMaterial = parseInt(key, 10) - 1;
       }
 
-      if (key === 'V') {
-        effect.toggle();
-      }
-
       if (e.which === 27 || e.key === 'Escape') {
         var form = $('#url-input-form');
         if (form) {
           hidePrompt(form);
         }
       }
+
+      switch(key) {
+        case 'V': // enter VR mode
+          utils.launchFs(main, { vrDisplay: vrHMD });
+          effect.enable();
+          break;
+        case 'Z': // zero HMD sensor
+          controls.resetSensor();
+          break;
+      }
+      
     });
   }
 
