@@ -192,7 +192,7 @@ module.exports = function(opts, setup) {
 
     // toggle between first and third person modes
     window.addEventListener('keydown', function(ev) {
-      if (ev.keyCode === 'R'.charCodeAt(0)) avatar.toggle()
+      if (!ev.metaKey && ev.keyCode === 'R'.charCodeAt(0)) avatar.toggle()
     })
 
     // block interaction stuff, uses highlight data
