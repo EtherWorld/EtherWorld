@@ -66,18 +66,15 @@ module.exports = function (game) {
         }
       };
     };
-
-    this.zeroSensor = function () {
-      THREE.warn( 'THREE.VRControls: .zeroSensor() is now .resetSensor().' );
-      this.resetSensor();
-    };
   };
+
+  var controls = new THREE.VRControls(camera);
 
   function tick() {
     controls.update();
   };
 
-  var controls = new THREE.VRControls(camera);
+  game.on('tick', tick);
 
-  game.on('tick', tick)
+  return controls;
 }
