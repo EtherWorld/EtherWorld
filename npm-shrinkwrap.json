@@ -2776,7 +2776,7 @@
     "voxel-oculus": {
       "version": "0.1.0",
       "from": "git://github.com/caseyyee/voxel-oculus",
-      "resolved": "git://github.com/caseyyee/voxel-oculus#6f1705bd4b2ebf5204ce55f32a8e1f866a55c279",
+      "resolved": "git://github.com/caseyyee/voxel-oculus#047c3637b5e8afd57f99ba0dc91ab33a02c0b7da",
       "dependencies": {
         "voxel-engine": {
           "version": "0.3.6",
