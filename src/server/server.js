@@ -27,7 +27,9 @@ const CLIENT_DIR = ROOT_DIR + '/src/client';
 
 // Routes that should render `/index.html` and get routed on the client.
 const SPA_ROUTES = [
-  '/room/:room'
+  '/room/:room',
+  '/url_prompt',
+  '/link/:link'
 ];
 
 app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));

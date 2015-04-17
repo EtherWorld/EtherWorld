@@ -1,7 +1,11 @@
 var utils = require('./lib/utils');
+
 var $ = utils.$;
 
-var _addTemplate = function(route, insertBefore) {
+var internals = {};
+
+
+internals.addTemplate = function(route, insertBefore) {
   var template = $('template[data-route="' + route + '"]');
 
   // Make a copy of the document fragment so the original template doesn't
@@ -15,14 +19,18 @@ var _addTemplate = function(route, insertBefore) {
   }
 };
 
-module.exports = {
 
-  appendTemplate: function(route, insertBefore) {
-    _addTemplate(route, false);
-  },
+exports.append = function(route, insertBefore) {
+  internals.addTemplate(route, false);
+};
 
-  prependTemplate: function(route, insertBefore) {
-    _addTemplate(route, true);
-  }
 
+exports.prepend = function(route, insertBefore) {
+  internals.addTemplate(route, true);
+};
+
+
+exports.render = function(route) {
+  main.setAttribute('data-route', route);
+  main.innerHTML = $('template[data-route="' + route + '"]').innerHTML;
 };

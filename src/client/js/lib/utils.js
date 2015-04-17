@@ -1,3 +1,9 @@
+var reRoomUrl = exports.reRoomUrl = /^[~a-z0-9_-]+$/i;
+
+
+exports.reStringRoomUrl = '([~\.a-z0-9_-]+)';
+
+
 exports.$ = function (sel) {
   return document.querySelector(sel);
 };
@@ -14,9 +20,19 @@ exports.getCurrentPath = function (win) {
 };
 
 
-exports.formatUrl = function(url) {
-  return (url.indexOf('://') == -1) ? 'http://' + url : url;
+var isRoom = exports.isRoom = function (str) {
+  return reRoomUrl.test(str);
 };
+
+
+exports.formatLinkUrl = function(url) {
+  if (isRoom(url)) {
+    return url;
+  }
+
+  return (url.indexOf('://') === -1 || url.indexOf('//') === -1) ? 'http://' + url : url;
+};
+
 
 exports.launchFs = function(element, opts) {
   if(element.requestFullscreen) {
@@ -27,6 +43,25 @@ exports.launchFs = function(element, opts) {
     element.webkitRequestFullscreen(opts);
   }
 };
+
+
+exports.requestPointerLock = function (el) {
+  el = el || document;
+  el.requestPointerLock = el.requestPointerLock ||
+                          el.mozRequestPointerLock ||
+                          el.webkitRequestPointerLock;
+  el.requestPointerLock();
+};
+
+
+exports.exitPointerLock = function (el) {
+  el = el || document;
+  el.exitPointerLock = el.exitPointerLock ||
+                       el.mozExitPointerLock ||
+                       el.webkitExitPointerLock;
+  el.exitPointerLock();
+};
+
 
 exports.debounce = function(func, wait, immediate) {
   var timeout;
