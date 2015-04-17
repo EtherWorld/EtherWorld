@@ -5,14 +5,14 @@
   "main": "src/server/server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KevinGrandon/etherworld.git"
+    "url": "https://github.com/EtherWorldVR/etherworld.git"
   },
   "author": "MozVR <mozvr@mozilla.com>",
   "license": "MPL",
   "bugs": {
-    "url": "https://github.com/KevinGrandon/etherworld/issues"
+    "url": "https://github.com/EtherWorldVR/etherworld/issues"
   },
-  "homepage": "https://github.com/KevinGrandon/etherworld",
+  "homepage": "https://github.com/EtherWorldVR/etherworld",
   "engines": {
     "node": "0.10.31"
   },

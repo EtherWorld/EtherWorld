@@ -7,7 +7,7 @@ Like Etherpad but for VR.
 
 1. Clone the git repository from GitHub:
 
-        git clone git@github.com:KevinGrandon/etherworld.git
+        git clone git@github.com:EtherWorldVR/etherworld.git
 
 2. Open the working directory:
 
