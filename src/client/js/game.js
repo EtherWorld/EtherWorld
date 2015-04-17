@@ -33,7 +33,7 @@ module.exports = function(opts, setup) {
   var router = new Grapnel({
     pushState: true
   });
-  router.divert = function (uri) {
+  router.divert = uri => {
     window.history.replaceState({}, null, uri);
     router.trigger('navigate').trigger('divert');
   };
@@ -73,8 +73,8 @@ module.exports = function(opts, setup) {
     if (this.fragment.get().indexOf('/link/') !== 0) {
       var iframe = $('#link__iframe.visible');
       if (iframe) {
+        iframe.src = '#';
         iframe.classList.remove('visible');
-        iframe.classList.add('hidden');
       }
     }
   });
@@ -113,7 +113,7 @@ module.exports = function(opts, setup) {
     }
   });
 
-  router.get('/link/:link', function(req) {
+  router.get('/link/:link', req => {
     var path = utils.getCurrentPath();
     console.log('[%s] Navigated to view', path);
 
@@ -121,32 +121,45 @@ module.exports = function(opts, setup) {
 
     console.log('[%s] link: %s', path, linkUrl);
 
-    if (utils.isRoom(linkUrl)) {
-      router.divert('/room/' + linkUrl);
-    } else {
-      var roomMatches = linkUrl.match(
-        window.location.origin + '/room/' + utils.reStringRoomUrl, 'i'
-      );
-      if (roomMatches && utils.isRoom(roomMatches[1])) {
-        router.divert('/room/' + roomMatches[1]);
-      } else if (REDIRECT_TO_EXTERNAL_LINKS) {
-        window.location.href = linkUrl;
-      } else {
-        var iframe = $('#link__iframe');
-        if (!iframe) {
-          template.append(this.state.route);
-          iframe = $('#link__iframe');
-        }
-        iframe.classList.remove('hidden');
-        iframe.classList.add('visible');
-        iframe.src = linkUrl;
-        iframe.onload = function () {
-          document.body.classList.remove('fade');
-          utils.exitPointerLock(document);
-        };
-      }
+    var iframe = $('#link__iframe');
+    if (!iframe) {
+      template.append('/link/:link');
+      iframe = $('#link__iframe');
     }
+
+    iframe.classList.add('visible');
+    iframe.src = linkUrl;
+    iframe.onload = function () {
+      document.body.classList.remove('fade');
+      utils.exitPointerLock(document);
+    };
   });
+
+  function loadLink(linkUrl) {
+    var path = utils.getCurrentPath();
+
+    console.log('[%s] link: %s', path, linkUrl);
+
+    if (utils.isRoom(linkUrl)) {
+      router.navigate('/room/' + linkUrl);
+      return;
+    }
+
+    var roomMatches = linkUrl.match(
+      window.location.origin + '/room/' + utils.reStringRoomUrl, 'i'
+    );
+
+    if (roomMatches && utils.isRoom(roomMatches[1])) {
+      router.navigate('/room/' + roomMatches[1]);
+      return;
+    }
+
+    if (REDIRECT_TO_EXTERNAL_LINKS) {
+      window.location.href = linkUrl;
+    } else {
+      router.navigate('/link/' + encodeURIComponent(linkUrl));
+    }
+  }
 
   function startGame(roomName) {
     // voxel game
@@ -266,12 +279,7 @@ module.exports = function(opts, setup) {
       var bd = client.blockdata.get(position.x, position.y, position.z);
       if (bd) {
         document.body.classList.add('fade');
-        var link = utils.formatLinkUrl(bd.link);
-        if (REDIRECT_TO_EXTERNAL_LINKS) {
-          window.location.href = link;
-        } else {
-          router.navigate('/link/' + encodeURIComponent(link));
-        }
+        loadLink(utils.formatLinkUrl(bd.link));
       }
     }, 250));
 

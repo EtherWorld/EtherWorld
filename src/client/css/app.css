@@ -140,11 +140,16 @@ body.fade {
 .link__iframe {
   background: #fff;
   border: 0;
+  display: none;
   left: 0;
   position: absolute;
   top: 0;
   height: 100%;
   width: 100%;
+}
+
+.link__iframe.visible {
+  display: block;
 }
 
 /* Toolbar */
