@@ -1,3 +1,8 @@
+var internals = {
+  field_tags_re: /input|keygen|meter|option|output|progress|select|textarea/i
+};
+
+
 exports.$ = function (sel) {
   return document.querySelector(sel);
 };
@@ -5,6 +10,11 @@ exports.$ = function (sel) {
 
 exports.$$ = function (sel) {
   return Array.prototype.slice.call(document.querySelectorAll(sel));
+};
+
+
+exports.fieldFocused = function (e) {
+  return internals.field_tags_re.test(e.target.nodeName);
 };
 
 
