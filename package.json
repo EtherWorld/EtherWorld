@@ -39,7 +39,7 @@
     "voxel": "~0.5.0",
     "voxel-blockdata": "^0.2.1",
     "voxel-crunch": "^0.2.1",
-    "voxel-engine": "caseyyee/voxel-engine#9172c9964266b26cdb490fab10f901316a4ec70a",
+    "voxel-engine": "caseyyee/voxel-engine#dd42bcb18c6842358c1dd35a583b6bcadc9d21dc",
     "voxel-oculus": "caseyyee/voxel-oculus#047c3637b5e8afd57f99ba0dc91ab33a02c0b7da",
     "voxel-fly": "~0.1.2",
     "voxel-highlight": "0.0.10",

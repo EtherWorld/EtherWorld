@@ -326,6 +326,9 @@ module.exports = function(opts, setup) {
     var effect = new oculus(game, {distortion: 0, separation: 0.01});
     var vrHMD;
 
+    var fsButton = $('#fullscreen');
+    var vrButton = $('#vr');
+
     var gotVRDevices = function(devices) {
       for (var i = 0; i < devices.length; i ++) {
         if (devices[i] instanceof HMDVRDevice) {
@@ -349,9 +352,18 @@ module.exports = function(opts, setup) {
       navigator.getVRDevices().then(gotVRDevices);
     }
 
+    var launchVr = function() {
+      utils.launchFs(game.view.element, { vrDisplay: vrHMD });
+      effect.enable();
+    }
+    
     document.addEventListener('mozfullscreenchange', handleFsChange);
     document.addEventListener('webkitfullscreenchange', handleFsChange);
-
+    vrButton.addEventListener('click', launchVr)
+    fsButton.addEventListener('click', function() {
+      utils.launchFs(main);
+    });
+    
     window.addEventListener('keydown', e => {
       var key = String.fromCharCode(e.which);
 
@@ -379,8 +391,7 @@ module.exports = function(opts, setup) {
 
       switch(key) {
         case 'V': // enter VR mode
-          utils.launchFs(main, { vrDisplay: vrHMD });
-          effect.enable();
+          launchVr();
           break;
         case 'Z': // zero HMD sensor
           controls.resetSensor();
