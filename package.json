@@ -1,7 +1,7 @@
 {
   "name": "etherworld",
   "version": "1.0.0",
-  "description": "like Etherpad but for VR",
+  "description": "EtherWorld is a virtual reality multi-user content creation tool. Create a room today, and build content with your friends.",
   "main": "src/server/server.js",
   "repository": {
     "type": "git",
