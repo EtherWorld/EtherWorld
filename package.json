@@ -1,6 +1,6 @@
 {
   "name": "etherworld",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "EtherWorld is a virtual reality multi-user content creation tool. Create a room today, and build content with your friends.",
   "main": "src/server/server.js",
   "repository": {
