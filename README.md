@@ -7,7 +7,7 @@ EtherWorld is a virtual reality multi-user content creation tool. Create a room 
 
 1. Clone the git repository from GitHub:
 
-        git clone git@github.com:EtherWorldVR/etherworld.git
+        git clone git@github.com:EtherWorld/etherworld.git
 
 2. Open the working directory:
 
