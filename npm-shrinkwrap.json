@@ -2572,8 +2572,8 @@
     },
     "voxel-engine": {
       "version": "0.20.1",
-      "from": "git://github.com/caseyyee/voxel-engine",
-      "resolved": "git://github.com/caseyyee/voxel-engine#dd42bcb18c6842358c1dd35a583b6bcadc9d21dc",
+      "from": "git://github.com/EtherWorld/voxel-engine",
+      "resolved": "git://github.com/EtherWorld/voxel-engine#a56a82285c74f6474f451b745f2a30fe3da5faaf",
       "dependencies": {
         "voxel": {
           "version": "0.3.1",
@@ -2587,8 +2587,8 @@
         },
         "voxel-view": {
           "version": "0.0.7",
-          "from": "voxel-view@git+https://github.com/caseyyee/voxel-view#master",
-          "resolved": "git+https://github.com/caseyyee/voxel-view#da29d5c43b53f63b9dc27445edc3d5bfc3c8e5ff"
+          "from": "voxel-view@git+https://github.com/EtherWorld/voxel-view#da29d5c43b53f63b9dc27445edc3d5bfc3c8e5ff",
+          "resolved": "git+https://github.com/EtherWorld/voxel-view#da29d5c43b53f63b9dc27445edc3d5bfc3c8e5ff"
         },
         "voxel-raycast": {
           "version": "0.2.1",
@@ -2775,67 +2775,67 @@
     },
     "voxel-oculus": {
       "version": "0.1.0",
-      "from": "voxel-oculus@git://github.com/caseyyee/voxel-oculus#047c3637b5e8afd57f99ba0dc91ab33a02c0b7da",
-      "resolved": "git://github.com/caseyyee/voxel-oculus#047c3637b5e8afd57f99ba0dc91ab33a02c0b7da",
+      "from": "git://github.com/EtherWorld/voxel-oculus",
+      "resolved": "git://github.com/EtherWorld/voxel-oculus#047c3637b5e8afd57f99ba0dc91ab33a02c0b7da",
       "dependencies": {
         "voxel-engine": {
           "version": "0.3.6",
-          "from": "https://registry.npmjs.org/voxel-engine/-/voxel-engine-0.3.6.tgz",
+          "from": "voxel-engine@0.3.6",
           "resolved": "https://registry.npmjs.org/voxel-engine/-/voxel-engine-0.3.6.tgz",
           "dependencies": {
             "voxel": {
               "version": "0.1.1",
-              "from": "https://registry.npmjs.org/voxel/-/voxel-0.1.1.tgz",
+              "from": "voxel@0.1.1",
               "resolved": "https://registry.npmjs.org/voxel/-/voxel-0.1.1.tgz"
             },
             "voxel-mesh": {
               "version": "0.1.0",
-              "from": "https://registry.npmjs.org/voxel-mesh/-/voxel-mesh-0.1.0.tgz",
+              "from": "voxel-mesh@0.1.0",
               "resolved": "https://registry.npmjs.org/voxel-mesh/-/voxel-mesh-0.1.0.tgz"
             },
             "inherits": {
               "version": "1.0.0",
-              "from": "https://registry.npmjs.org/inherits/-/inherits-1.0.0.tgz",
+              "from": "inherits@1.0.0",
               "resolved": "https://registry.npmjs.org/inherits/-/inherits-1.0.0.tgz"
             },
             "player-physics": {
               "version": "0.0.11",
-              "from": "https://registry.npmjs.org/player-physics/-/player-physics-0.0.11.tgz",
+              "from": "player-physics@0.0.11",
               "resolved": "https://registry.npmjs.org/player-physics/-/player-physics-0.0.11.tgz"
             },
             "three": {
               "version": "0.54.0",
-              "from": "https://registry.npmjs.org/three/-/three-0.54.0.tgz",
+              "from": "three@0.54.0",
               "resolved": "https://registry.npmjs.org/three/-/three-0.54.0.tgz"
             },
             "raf": {
               "version": "0.0.1",
-              "from": "https://registry.npmjs.org/raf/-/raf-0.0.1.tgz",
+              "from": "raf@0.0.1",
               "resolved": "https://registry.npmjs.org/raf/-/raf-0.0.1.tgz"
             },
             "interact": {
               "version": "0.0.2",
-              "from": "https://registry.npmjs.org/interact/-/interact-0.0.2.tgz",
+              "from": "interact@0.0.2",
               "resolved": "https://registry.npmjs.org/interact/-/interact-0.0.2.tgz",
               "dependencies": {
                 "drag-stream": {
                   "version": "0.0.2",
-                  "from": "https://registry.npmjs.org/drag-stream/-/drag-stream-0.0.2.tgz",
+                  "from": "drag-stream@0.0.2",
                   "resolved": "https://registry.npmjs.org/drag-stream/-/drag-stream-0.0.2.tgz",
                   "dependencies": {
                     "domnode-dom": {
                       "version": "0.0.4",
-                      "from": "https://registry.npmjs.org/domnode-dom/-/domnode-dom-0.0.4.tgz",
+                      "from": "domnode-dom@~0.0.X",
                       "resolved": "https://registry.npmjs.org/domnode-dom/-/domnode-dom-0.0.4.tgz",
                       "dependencies": {
                         "domnode": {
                           "version": "0.0.3",
-                          "from": "https://registry.npmjs.org/domnode/-/domnode-0.0.3.tgz",
+                          "from": "domnode@~0.0.3",
                           "resolved": "https://registry.npmjs.org/domnode/-/domnode-0.0.3.tgz",
                           "dependencies": {
                             "mustache": {
                               "version": "0.4.0",
-                              "from": "https://registry.npmjs.org/mustache/-/mustache-0.4.0.tgz",
+                              "from": "mustache@0.4.0",
                               "resolved": "https://registry.npmjs.org/mustache/-/mustache-0.4.0.tgz"
                             }
                           }
@@ -2844,65 +2844,65 @@
                     },
                     "through": {
                       "version": "1.1.2",
-                      "from": "https://registry.npmjs.org/through/-/through-1.1.2.tgz",
+                      "from": "through@~1.1.1",
                       "resolved": "https://registry.npmjs.org/through/-/through-1.1.2.tgz"
                     }
                   }
                 },
                 "fullscreen": {
                   "version": "0.0.1",
-                  "from": "https://registry.npmjs.org/fullscreen/-/fullscreen-0.0.1.tgz",
+                  "from": "fullscreen@0.0.1",
                   "resolved": "https://registry.npmjs.org/fullscreen/-/fullscreen-0.0.1.tgz"
                 },
                 "pointer-lock": {
                   "version": "0.0.3",
-                  "from": "https://registry.npmjs.org/pointer-lock/-/pointer-lock-0.0.3.tgz",
+                  "from": "pointer-lock@0.0.3",
                   "resolved": "https://registry.npmjs.org/pointer-lock/-/pointer-lock-0.0.3.tgz"
                 }
               }
             },
             "toolbar": {
               "version": "0.0.2",
-              "from": "https://registry.npmjs.org/toolbar/-/toolbar-0.0.2.tgz",
+              "from": "toolbar@0.0.2",
               "resolved": "https://registry.npmjs.org/toolbar/-/toolbar-0.0.2.tgz"
             },
             "voxel-texture": {
               "version": "0.2.2",
-              "from": "https://registry.npmjs.org/voxel-texture/-/voxel-texture-0.2.2.tgz",
+              "from": "voxel-texture@0.2.2",
               "resolved": "https://registry.npmjs.org/voxel-texture/-/voxel-texture-0.2.2.tgz",
               "dependencies": {
                 "three": {
                   "version": "0.55.0",
-                  "from": "https://registry.npmjs.org/three/-/three-0.55.0.tgz",
+                  "from": "three@~0.55.0",
                   "resolved": "https://registry.npmjs.org/three/-/three-0.55.0.tgz"
                 }
               }
             },
             "collide-3d-tilemap": {
               "version": "0.0.1",
-              "from": "https://registry.npmjs.org/collide-3d-tilemap/-/collide-3d-tilemap-0.0.1.tgz",
+              "from": "collide-3d-tilemap@0.0.1",
               "resolved": "https://registry.npmjs.org/collide-3d-tilemap/-/collide-3d-tilemap-0.0.1.tgz"
             },
             "aabb-3d": {
               "version": "0.0.0",
-              "from": "https://registry.npmjs.org/aabb-3d/-/aabb-3d-0.0.0.tgz",
+              "from": "aabb-3d@0.0.0",
               "resolved": "https://registry.npmjs.org/aabb-3d/-/aabb-3d-0.0.0.tgz",
               "dependencies": {
                 "gl-matrix": {
                   "version": "2.1.0",
-                  "from": "https://registry.npmjs.org/gl-matrix/-/gl-matrix-2.1.0.tgz",
+                  "from": "gl-matrix@2.X.X",
                   "resolved": "https://registry.npmjs.org/gl-matrix/-/gl-matrix-2.1.0.tgz"
                 }
               }
             },
             "spatial-events": {
               "version": "0.0.0",
-              "from": "https://registry.npmjs.org/spatial-events/-/spatial-events-0.0.0.tgz",
+              "from": "spatial-events@0.0.0",
               "resolved": "https://registry.npmjs.org/spatial-events/-/spatial-events-0.0.0.tgz"
             },
             "spatial-trigger": {
               "version": "0.0.0",
-              "from": "https://registry.npmjs.org/spatial-trigger/-/spatial-trigger-0.0.0.tgz",
+              "from": "spatial-trigger@0.0.0",
               "resolved": "https://registry.npmjs.org/spatial-trigger/-/spatial-trigger-0.0.0.tgz"
             }
           }
