@@ -1,6 +1,6 @@
 # EtherWorld
 
-Like Etherpad but for VR.
+EtherWorld is a virtual reality multi-user content creation tool. Create a room today, and build content with your friends.
 
 
 ## Installation
