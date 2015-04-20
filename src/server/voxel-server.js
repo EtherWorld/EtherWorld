@@ -21,15 +21,15 @@ var primitives = [{
 }, {
   color: '#000000'
 }, {
-  color: '#00e0f6'
+  color: '#00baee'
 }, {
-  color: '#74cd59'
+  color: '#26cf88'
 }, {
-  color: '#cb8503'
+  color: '#ff9400'
 }, {
-  color: '#697dd3'
+  color: '#894dff'
 }, {
-  color: '#ee4fcf'
+  color: '#ff00c1'
 }];
 
 module.exports = function(opts) {
