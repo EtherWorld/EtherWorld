@@ -2,6 +2,8 @@
 
 EtherWorld is a virtual reality multi-user content creation tool. Create a room today, and build content with your friends.
 
+[![EtherWorld screenshot](https://avatars3.githubusercontent.com/u/11998481?v=3&s=200 "EtherWorld screenshot")](https://etherworld.herokuapp.com/)
+
 
 ## Installation
 
