@@ -21,7 +21,7 @@
     "babelify": "^5.0.4",
     "browserify": "^9.0.3",
     "duplex-emitter": "^2.1.2",
-    "ecstatic": "^0.7.1",
+    "ecstatic": "~> 2.0.0",
     "es6-promise": "^2.0.1",
     "express": "^4.12.2",
     "extend": "1.1.3",
