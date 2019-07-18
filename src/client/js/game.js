@@ -261,11 +261,6 @@ module.exports = function(opts, setup) {
       blockPosPlace = null
     })
 
-    // toggle between first and third person modes
-    window.addEventListener('keydown', function(ev) {
-      if (!ev.metaKey && ev.keyCode === 'R'.charCodeAt(0)) avatar.toggle()
-    })
-
     // block interaction stuff, uses highlight data
     var currentMaterial = 2
 
@@ -356,15 +351,20 @@ module.exports = function(opts, setup) {
       utils.launchFs(game.view.element, { vrDisplay: vrHMD });
       effect.enable();
     }
-    
+
     document.addEventListener('mozfullscreenchange', handleFsChange);
     document.addEventListener('webkitfullscreenchange', handleFsChange);
     vrButton.addEventListener('click', launchVr)
     fsButton.addEventListener('click', function() {
       utils.launchFs(main);
     });
-    
+
     window.addEventListener('keydown', e => {
+      if (utils.fieldFocused(e)) {
+        return;
+      }
+
+      // Toggle between materials (colours).
       var key = String.fromCharCode(e.which);
 
       if (key.match(/[0-9]{1}/)) {
@@ -389,13 +389,18 @@ module.exports = function(opts, setup) {
         }
       }
 
-      switch(key) {
-        case 'V': // enter VR mode
-          launchVr();
-          break;
-        case 'Z': // zero HMD sensor
-          controls.resetSensor();
-          break;
+      if (!ev.metaKey) {
+        switch (key) {
+          case 'R': // toggle between first- and third-person modes
+            avatar.toggle();
+            break;
+          case 'V': // enter VR mode
+            launchVr();
+            break;
+          case 'Z': // zero HMD sensor
+            controls.resetSensor();
+            break;
+        }
       }
 
     });
